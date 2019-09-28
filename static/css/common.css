@@ -1,0 +1,9 @@
+.clearPadding{
+    padding: 0;
+}
+.clearLeftPadding{
+    padding-left: 0;
+}
+.clearRightPadding{
+    padding-right: 0;
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {#title标签#}
+    {% block title %}{% endblock %}
+    <script type="text/javascript" src="/static/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <style type="text/css">
+        .wrap{
+            border: 1px solid red;
+        }
+        .sidebar{
+            background-color: #3A3E4A;
+        }
+        {% block css %}{% endblock %}
+    </style>
+    {#不同页面引入不同的资源#}
+    {% block sources %}{% endblock %}
+</head>
+<body onresize="adjustment()">
+    <div class="container-fluid">
+        <div class="fixedPartTop">
+            <nav class="header navbar navbar-inverse navbar-fixed-top ">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Project name</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#">Settings</a></li>
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Help</a></li>
+                        </ul>
+                        <form class="navbar-form navbar-right">
+                            <input type="text" class="form-control" placeholder="Search...">
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="unfixedPartLeftover">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar" style="position: fixed;">
+                    <ul class="nav nav-sidebar">
+                        <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Reports</a></li>
+                        <li><a href="#">Analytics</a></li>
+                        <li><a href="#">Export</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+                    <h1 class="page-header">右边</h1>
+                </div>
+            </div>
+        </div>
+{#            <div class="footer">#}
+{#                <div class="fleft">左边</div>#}
+{#                <div class="fright">右边</div>#}
+{#            </div>#}
+    </div>
+</body>
+<script type="text/javascript">
+    var wrap;
+    var header;
+    var unfixedPartLeftover;
+    var sidebar;
+    function init() {
+        wrap=$(".wrap")
+        header=$(".header");
+        sidebar=$(".sidebar");
+        unfixedPartLeftover=$(".unfixedPartLeftover");
+        adjustment();
+    }
+    init();
+    {#自适应相关调整#}
+    function adjustment(){
+        windowHeight=$(window).height();
+        windowWidth=$(window).width();
+        sidebar.css("height",windowHeight);
+        headerHeight=header.height();
+        headerWidth=header.width();
+        unfixedPartLeftover.css("padding-top",headerHeight)
+    }
+    {% block js %}{% endblock %}
+</script>
+</html>
