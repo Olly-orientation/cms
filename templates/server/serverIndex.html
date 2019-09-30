@@ -2,6 +2,171 @@
 {% block title %}
 <title>后台管理系统</title>
 {% endblock %}
-{% block right %}
-    <h1>右边ssss</h1>
+{% block sources %}
+    <link rel="stylesheet" href="/static/css/common.css">
 {% endblock %}
+<style type="text/css">
+    {% block css %}
+    .location{
+        background-color: #F5F5F5;
+        height: 45px;
+        line-height: 45px;
+        text-indent: 40px;
+        background-image: url("/static/img/serverImg/tag1.png");
+        background-repeat: no-repeat;
+        background-position: 5px center;
+    }
+    .index .panel-heading{
+        height: 75px;
+    }
+    .index .indexInfo{
+        color: white;
+    }
+    .indexNum{
+        font-size: 20px;
+        font-weight: bold;
+    }
+    a{
+        text-decoration: none;
+    }
+    a:hover{
+        text-decoration: none;
+    }
+{% endblock %}
+</style>
+
+{% block right %}
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <h1>欢迎使用 <small class="lead" style="color: #8C9190">路赞后台管理系统</small></h1>
+            <hr/>
+
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 30px">
+        <div class="col-md-12 col-lg-12">
+            <p class="location text-primary">平台整理指标</p>
+        </div>
+    </div>
+    <div class="row index">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="col-md-2 col-lg-2">
+                        <img src="/static/img/serverImg/cloud.png " alt="">
+                    </div>
+                    <div class="col-md-3 col-lg-4 col-lg-offset-6 col-md-offset-7 indexInfo">
+                        <center>
+                            <p class="panel-title">今日用户登录数</p>
+                        </center>
+                        <center><span class="indexNum">250</span></center>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <p><a href="#">查看</a></p>
+                    </div>
+                    <div class="col-md-1 col-md-offset-9">
+                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="col-md-2">
+                        <img src="/static/img/serverImg/menu2.png " alt="">
+                    </div>
+                    <div class="col-md-4 col-md-offset-6 indexInfo">
+                        <center>
+                            <p class="panel-title">今日用户登录数</p>
+                        </center>
+                        <center><span class="indexNum">250</span></center>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <p><a href="#">查看</a></p>
+                    </div>
+                    <div class="col-md-1 col-md-offset-9">
+                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row index">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="col-md-2">
+                        <img src="/static/img/serverImg/cloud.png " alt="">
+                    </div>
+                    <div class="col-md-4 col-md-offset-6 indexInfo">
+                        <center>
+                            <p class="panel-title">今日用户登录数</p>
+                        </center>
+                        <center><span class="indexNum">250</span></center>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <p><a href="#">查看</a></p>
+                    </div>
+                    <div class="col-md-1 col-md-offset-9">
+                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="col-md-2">
+                        <img src="/static/img/serverImg/cloud.png " alt="">
+                    </div>
+                    <div class="col-md-4 col-md-offset-6 indexInfo">
+                        <center>
+                            <p class="panel-title">今日用户登录数</p>
+                        </center>
+                        <center><span class="indexNum">250</span></center>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <p><a href="#">查看</a></p>
+                    </div>
+                    <div class="col-md-1 col-md-offset-9">
+                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+<script type="text/javascript">
+    {% block js %}
+        var panel;
+        function  init() {
+            panel=$(".index .panel");
+            console.log(panel);
+            styleControl()
+        }
+        init();
+        function styleControl(){
+            backgroundColorGroup=["#6EA5DD","#5BBA5B","#F7AE4B","#DE524B"];
+            for (var i=0;i<panel.length;i++){
+                panelItem=panel.eq(i);
+                panelItem.css("border","1px solid "+backgroundColorGroup[i])
+                panelHeading=panelItem.find(".panel-heading");
+                panelBody=panelItem.find(".panel-body a");
+                panelSpan=panelItem.find(".panel-body span");
+                panelSpan.css("color",backgroundColorGroup[i]);
+                panelBody.css("color",backgroundColorGroup[i]);
+                panelHeading.css("background-color",backgroundColorGroup[i]);
+            }
+
+        }
+    {% endblock %}
+</script>
