@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路赞后台管理系统</title>
+    <style type="text/css">
+        *{
+            padding: 0;
+            border:0;
+            margin: 0;
+        }
+        .header{
+            height: 45px;
+            line-height: 45px;
+            background-color: #1b6d85;
+        }
+        .main{
+            background-image: url("/static/img/login.jpg");
+            background-size: 100%;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .footer{
+            text-align: center;
+            background-color: #1b6d85;
+            height: 50px;
+            line-height: 50px;
+            color: snow;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+        .loginWindow{
+            width: 45%;
+            background-color: white;
+            position: absolute;
+            margin: auto;
+            height: 38%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+    <script src="/static/js/jquery-3.4.1.js"></script>
+    <script src="/static/js/jquery.validate.js"></script>
+    <script src="/static/js/jquery.form.js"></script>
+
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+
+</head>
+<body onresize="adjust()">
+<div class="container-fluid">
+    <div class="row header clearPadding"></div>
+    <div class="row main">
+        <div class="loginWindow">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                   <h2 class="text-center"><span class="glyphicon glyphicon-user"></span> 路赞后台管理系统入口</h2>
+                </div>
+
+            </div>
+            <div class="row">
+                <form class="form-horizontal" style="width: 55%;margin: auto" method="post" action="/server/loginCheck/">
+                  {% csrf_token %}
+                    <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" name="username" placeholder="请输入用户名">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" name="pwd" placeholder="请输入密码">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-primary">登录</button>
+                      <button type="reset" class="btn btn-default">重写</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row footer">
+        <p>Copyright @ 2017 Luzan.com Inc. All Rights Reserved 路赞杂志社 版权所有</p>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    var header;
+    var main;
+    var footer;
+    var loginForm;
+    function init() {
+        header=$(".header");
+        main=$(".main");
+        footer=$(".footer");
+        loginForm=$(".loginWindow form");
+        loginForm.validate({
+            rules:{
+                username:{
+                    required:true
+                },
+                pwd:{
+                    required:true
+                }
+            },
+            messages:{
+                username:{
+                    required:"请输入用户名"
+                },
+                pwd:{
+                    required:"密码不能为空"
+                }
+            }
+        });
+        adjust()
+    }
+    init();
+    function adjust(){
+        windowHeight=$(window).height();
+        headerHeight=header.height();
+        footerHeight=footer.height();
+        main.height(windowHeight-(headerHeight+footerHeight))
+    }
+</script>
+</html>

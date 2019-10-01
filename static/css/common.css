@@ -1,3 +1,4 @@
+*{padding: 0;margin: 0;border: 0}
 .clearPadding{
     padding: 0;
 }
@@ -10,4 +11,13 @@
 a{
     text-decoration: none;
     color: #000;
+}
+.location{
+    background-color: #F5F5F5;
+    height: 45px;
+    line-height: 45px;
+    text-indent: 40px;
+    background-image: url("/static/img/serverImg/tag1.png");
+    background-repeat: no-repeat;
+    background-position: 5px center;
 }

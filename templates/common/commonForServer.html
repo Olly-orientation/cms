@@ -5,6 +5,7 @@
     {#title标签#}
     {% block title %}{% endblock %}
     <script type="text/javascript" src="/static/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
     <style type="text/css">
         .wrap{
             border: 1px solid red;
@@ -14,6 +15,20 @@
         }
         .nav li a{
             color: white;
+        }
+        a:hover{
+            text-decoration: none;
+        }
+        .location{
+            background-color: #F5F5F5;
+            height: 45px;
+            line-height: 45px;
+            text-indent: 25px;
+            background-image: url("/static/img/serverImg/tag1.png");
+            background-repeat: no-repeat;
+            background-size: 15px;
+            background-position: 5px center;
+            border-radius:5px ;
         }
         .unfixedPartLeftover .nav li{
             background-repeat: no-repeat;
@@ -26,7 +41,6 @@
         {% block css %}{% endblock %}
     </style>
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/css/common.css">
     {#不同页面引入不同的资源#}
     {% block sources %}{% endblock %}
 </head>
@@ -34,19 +48,18 @@
     <div class="container-fluid">
         <div class="fixedPartTop">
             <nav class="header navbar navbar-inverse navbar-fixed-top ">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
+                <div class="container-fluid row">
+                    <div class="navbar-header col-md-3">
                         <a class="navbar-brand" href="#" style="font-weight: bold;color: white;">路赞后台管理系统</a>
                     </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        sss
+                    <div class="col-md-9" style="padding-top: 1.1%">
+                        <div id="navbar" class="col-md-3 col-lg-3 col-lg-offset-10 col-md-offset-10">
+                            <span class="glyphicon glyphicon-user" style="color: white;"></span>
+                            <span style="color: white">欢迎，张三</span>
+                            <a href="/server/login" style="color: white"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;退出</a>
+                        </div>
                     </div>
+
                 </div>
             </nav>
         </div>
@@ -54,8 +67,8 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar" style="position: fixed;">
                     <ul class="nav nav-sidebar">
-                        <li><a href="#">首页</a></li>
-                        <li><a href="#">菜单管理</a></li>
+                        <li><a href="/server/serverIndex">首页</a></li>
+                        <li><a href="/server/menu">菜单管理</a></li>
                         <li><a href="#">文章管理</a></li>
                         <li><a href="#">用户管理</a></li>
                         <li><a href="#">推荐位管理</a></li>

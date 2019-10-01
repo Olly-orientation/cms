@@ -1,10 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "common/commonForServer.html" %}
+{% block title %}
+    <title>菜单管理</title>
+{% endblock %}
+<style type="text/css">
+    {% block css %}
+        .menuList table th,tr,td{
+            text-align: center;
+        }
+        .menuList button{
+            color: white;
+        }
+    {% endblock %}
+</style>
 
-</body>
-</html>
+{% block right %}
+    <div class="container-fluid">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12 col-lg-12">
+                <p class="location"><a class="text-primary" href="/server/menu">菜单管理</a> / 菜单列表</p>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-md-2">
+               <button type="button" class="btn btn-primary menumanagebtn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加菜单</button>
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 menuList">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">id</th>
+                      <th>菜单名</th>
+                      <th>状态</th>
+                      <th style="width: 10%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>科技</td>
+                      <td>显示</td>
+                      <td>
+                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
+                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                      </td>
+                    </tr>
+                  <tr>
+                      <th scope="row">1</th>
+                      <td>科技</td>
+                      <td>显示</td>
+                      <td>
+                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
+                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+<script type="text/javascript">
+    {% block js %}
+        var manageBtn;
+        function init() {
+            manageBtn=$(".menumanagebtn");
+            manageBtn.on("click",gotoManage)
+        }
+        init();
+        function gotoManage() {
+            location.href="/server/addmenu"
+        }
+    {% endblock %}
+</script>

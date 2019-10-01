@@ -22,13 +22,11 @@ class source(models.Model):
     sourceId=models.AutoField(primary_key=True)
     sourceName=models.CharField(max_length=200)
 
-class topics(models.Model):
-    topicId=models.AutoField(primary_key=True)
-    topicName=models.CharField(max_length=200)
 
 class menu(models.Model):
     menuId=models.AutoField(primary_key=True)
     menuName=models.CharField(max_length=200)
+    menuStatus=models.SmallIntegerField(default=0)
 
 class position(models.Model):
     positionId=models.AutoField(primary_key=True)
