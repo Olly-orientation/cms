@@ -1,0 +1,79 @@
+{% extends "common/commonForServer.html" %}
+{% block title %}
+<title>添加管理员</title>
+{% endblock %}
+{% block sources %}
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/jquery.validate.js"></script>
+{% endblock %}
+{% block right %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-12 col-lg-12">
+                    <p class="location"><a class="text-primary" href="/server/menu">菜单管理</a> / 添加菜单</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                {# form表单#}
+                    <form class="form-horizontal addMenu" method="get" action="/server/savemenu">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">菜单名</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="menuName" placeholder="请输入菜单名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" id="inlineCheckbox1" name="status" checked value="0">开启
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="inlineCheckbox2" name="status" value="1">关闭
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-primary">添加</button>
+                              <button type="reset" class="btn btn-default">重填</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+<script type="text/javascript">
+    {% block js %}
+        var form;
+        function init() {
+            form=$(".addMenu");
+            form.validate({
+                rules:{
+                    menuName:{
+                        required:true
+                    }
+                },
+                messages:{
+                    menuName:{
+                        required: "请填写菜单名"
+                    }
+                },
+                submitHandler:function(form){
+                    $(".addMenu").ajaxSubmit(function(data){
+                        console.log(data)
+                    });
+                }
+            })
+        }
+        init();
+    {% endblock %}
+</script>

@@ -1,5 +1,5 @@
 from django.db import models
-
+from DjangoUeditor.models import UEditorField
 # Create your models here.
 
 class article(models.Model):
@@ -16,7 +16,7 @@ class article(models.Model):
 class articlecontent(models.Model):
     contentId=models.AutoField(primary_key=True)
     articleId=models.IntegerField()
-    contents=models.TextField()
+    contents=UEditorField('内容', width=600, height=300, toolbars="full", imagePath="", filePath="",upload_settings={"imageMaxSize":1204000},settings={})
 
 class source(models.Model):
     sourceId=models.AutoField(primary_key=True)
@@ -40,3 +40,5 @@ class admin(models.Model):
     adminId=models.AutoField(primary_key=True)
     adminname=models.CharField(max_length=50)
     password=models.CharField(max_length=20,default='')
+
+

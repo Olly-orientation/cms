@@ -1,0 +1,79 @@
+{% extends "common/commonForServer.html" %}
+{% block title %}
+    <title>文章管理</title>
+{% endblock %}
+<style type="text/css">
+    {% block css %}
+        .menuList table th,tr,td{
+            text-align: center;
+        }
+        .menuList button{
+            color: white;
+        }
+    {% endblock %}
+</style>
+
+{% block right %}
+    <div class="container-fluid">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12 col-lg-12">
+                <p class="location"><a class="text-primary" href="/server/articleList">文章管理</a> / 文章列表</p>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-md-2">
+               <button type="button" class="btn btn-primary article-manage-btn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加文章</button>
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 menuList">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">id</th>
+                      <th>标题</th>
+                      <th>栏目</th>
+                      <th>来源</th>
+                      <th>封面图</th>
+                      <th>更新时间</th>
+                      <th>点击量</th>
+                      <th>状态</th>
+                      <th style="width: 10%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>震惊了</td>
+                      <td>军事</td>
+                      <td>腾讯新闻</td>
+                      <td>thumb</td>
+                      <td>2018</td>
+                      <td>54</td>
+                      <td>显示</td>
+                      <td>
+                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
+                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+<script type="text/javascript">
+    {% block js %}
+        var manageBtn;
+        function init() {
+            manageBtn=$(".article-manage-btn");
+            manageBtn.on("click",gotoManage)
+        }
+        init();
+        function gotoManage() {
+            location.href="/server/addArticle"
+        }
+    {% endblock %}
+</script>

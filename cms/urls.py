@@ -18,4 +18,5 @@ from django.urls import path,include
 
 urlpatterns = [
     path("server/",include("server.urls")),
+    path("ueditor/",include("DjangoUeditor.urls"))
 ]

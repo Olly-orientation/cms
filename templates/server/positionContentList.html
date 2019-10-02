@@ -1,0 +1,77 @@
+{% extends "common/commonForServer.html" %}
+{% block title %}
+    <title>推荐位内容管理</title>
+{% endblock %}
+<style type="text/css">
+    {% block css %}
+        .menuList table th,tr,td{
+            text-align: center;
+        }
+        .menuList button{
+            color: white;
+        }
+    {% endblock %}
+</style>
+
+{% block right %}
+    <div class="container-fluid">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12 col-lg-12">
+                <p class="location"><a class="text-primary" href="/server/menu">推荐位内容管理</a> / 推荐位内容列表</p>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-md-2">
+               查询
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 menuList">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">id</th>
+                      <th>所在推荐位</th>
+                      <th>标题</th>
+                      <th>缩略图</th>
+                      <th>状态</th>
+                      <th>创建时间</th>
+                      <th>更新时间</th>
+                      <th style="width: 10%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>2</td>
+                        <td>震惊</td>
+                        <td>thumb</td>
+                        <td>显示</td>
+                        <td>2018</td>
+                        <td>2019</td>
+                        <td>
+                            <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                        </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+<script type="text/javascript">
+    {% block js %}
+        var manageBtn;
+        function init() {
+            manageBtn=$(".positionContentBtn");
+            manageBtn.on("click",gotoManage)
+        }
+        init();
+        function gotoManage() {
+            location.href="/server/addPositionContent"
+        }
+    {% endblock %}
+</script>
