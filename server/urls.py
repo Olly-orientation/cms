@@ -4,6 +4,7 @@ from server import views
 
 urlpatterns = [
     path('serverIndex/', views.index),
+    path("clearAdminInfo/",views.clearAdminInfo),
     path("menu/",views.menu),
     path("addmenu/",views.addmenu),
     path("login/",views.login),

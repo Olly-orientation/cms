@@ -1,79 +1,173 @@
-{% extends "common/commonForServer.html" %}
-{% block title %}
-<title>添加管理员</title>
-{% endblock %}
-{% block sources %}
-    <link rel="stylesheet" href="/static/css/common.css">
-    <script src="/static/js/jquery.form.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路赞后台管理系统</title>
+    <script type="text/javascript" src="/static/js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script src="/static/js/jquery.validate.js"></script>
-{% endblock %}
-{% block right %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="row" style="margin-top:20px;">
-                <div class="col-md-12 col-lg-12">
-                    <p class="location"><a class="text-primary" href="/server/menu">菜单管理</a> / 添加菜单</p>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                {# form表单#}
-                    <form class="form-horizontal addMenu" method="get" action="/server/savemenu">
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-2 control-label">菜单名</label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" name="menuName" placeholder="请输入菜单名">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputPassword3" class="col-sm-2 control-label">状态</label>
-                            <div class="col-sm-10">
-                                <label class="radio-inline">
-                                    <input type="radio" id="inlineCheckbox1" name="status" checked value="0">开启
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" id="inlineCheckbox2" name="status" value="1">关闭
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                              <button type="submit" class="btn btn-primary">添加</button>
-                              <button type="reset" class="btn btn-default">重填</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-{% endblock %}
-<script type="text/javascript">
-    {% block js %}
-        var form;
-        function init() {
-            form=$(".addMenu");
-            form.validate({
-                rules:{
-                    menuName:{
-                        required:true
-                    }
-                },
-                messages:{
-                    menuName:{
-                        required: "请填写菜单名"
-                    }
-                },
-                submitHandler:function(form){
-                    $(".addMenu").ajaxSubmit(function(data){
-                        console.log(data)
-                    });
-                }
-            })
+    <script src="/static/js/jquery.form.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <style type="text/css">
+        *{
+            padding: 0;
+            border:0;
+            margin: 0;
         }
-        init();
-    {% endblock %}
+        .header{
+            height: 45px;
+            line-height: 45px;
+            background-color: #1b6d85;
+        }
+        .main{
+            background-image: url("/static/img/login.jpg");
+            background-size: 100%;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .footer{
+            text-align: center;
+            background-color: #1b6d85;
+            height: 50px;
+            line-height: 50px;
+            color: snow;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+        .loginWindow{
+            width: 45%;
+            background-color: white;
+            position: absolute;
+            margin: auto;
+            height: 38%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+
+
+</head>
+<body onresize="adjust()">
+<div class="container-fluid">
+    <div class="row header clearPadding"></div>
+    <div class="row main">
+        <div class="loginWindow">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                   <h2 class="text-center"><span class="glyphicon glyphicon-user"></span> 路赞后台管理系统入口</h2>
+                </div>
+
+            </div>
+            <div class="row">
+                <form class="form-horizontal" style="width: 55%;margin: auto" method="post" action="/server/loginCheck/">
+                  {% csrf_token %}
+                    <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" name="username" placeholder="请输入用户名">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" name="pwd" placeholder="请输入密码">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-primary" id="loginBtn">登录</button>
+                      <button type="reset" class="btn btn-default">重写</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row footer">
+        <p>Copyright @ 2017 Luzan.com Inc. All Rights Reserved 路赞杂志社 版权所有</p>
+    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <center class="tips"></center>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+</body>
+<script type="text/javascript">
+    var header;
+    var main;
+    var footer;
+    var modalTag;
+    var loginBtn;
+    var loginForm;
+    var loginStatus;
+    var tips;
+    function init() {
+        header=$(".header");
+        main=$(".main");
+        footer=$(".footer");
+        loginForm=$(".loginWindow form");
+        modalTag=$("#loginModal");
+        tips=$(".tips");
+        loginForm.validate({
+            rules:{
+                username:{
+                    required:true
+                },
+                pwd:{
+                    required:true
+                }
+            },
+            messages:{
+                username:{
+                    required:"请输入用户名"
+                },
+                pwd:{
+                    required:"密码不能为空"
+                }
+            },
+            submitHandler:function(form){
+                loginForm.ajaxSubmit(function(data){
+                    console.log(data)
+                    loginStatus=data;
+                    tips.html(loginStatus["tips"]);
+                    showModal()
+                });
+            }
+        });
+        adjust()
+    }
+    init();
+    function adjust(){
+        windowHeight=$(window).height();
+        headerHeight=header.height();
+        footerHeight=footer.height();
+        main.height(windowHeight-(headerHeight+footerHeight))
+    }
+    function showModal(){
+        modalTag.modal("show");
+        modalTag.on('hidden.bs.modal', function (e) {
+            if(loginStatus["status"]===0){
+                location.href="/server/serverIndex"
+            }
+        })
+    }
 </script>
+</html>
