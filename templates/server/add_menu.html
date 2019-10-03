@@ -69,6 +69,7 @@
                 },
                 submitHandler:function(form){
                     $(".addMenu").ajaxSubmit(function(data){
+                        data=JSON.parse(data);
                         console.log(data)
                     });
                 }

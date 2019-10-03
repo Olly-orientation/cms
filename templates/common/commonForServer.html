@@ -40,6 +40,7 @@
         }
         {% block css %}{% endblock %}
     </style>
+    <script type="text/javascript" src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
     {#不同页面引入不同的资源#}
     {% block sources %}{% endblock %}
@@ -55,8 +56,8 @@
                     <div class="col-md-9" style="padding-top: 1.1%">
                         <div id="navbar" class="col-md-3 col-lg-3 col-lg-offset-10 col-md-offset-10">
                             <span class="glyphicon glyphicon-user" style="color: white;"></span>
-                            <span style="color: white">欢迎，张三</span>
-                            <a href="/server/login" style="color: white"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;退出</a>
+                            <span style="color: white">欢迎，{{ admin }}</span>
+                            <a href="/server/clearAdminInfo" style="color: white">&nbsp;<span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;退出</a>
                         </div>
                     </div>
 
@@ -83,6 +84,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="tip-login" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <center class="tips">请先登录</center>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </body>
 <script type="text/javascript">
     var wrap;
@@ -90,7 +109,10 @@
     var unfixedPartLeftover;
     var navGroup;
     var sidebar;
+    var tip_login;
     function init() {
+        tip_login=$("#tip-login");
+        checkLogin();
         wrap=$(".wrap");
         header=$(".header");
         sidebar=$(".unfixedPartLeftover .sidebar");
@@ -115,6 +137,16 @@
         sidebar.css("height",windowHeight+"px");
         headerHeight=header.height();
         unfixedPartLeftover.css("padding-top",headerHeight)
+    }
+    {#登录检查#}
+    function checkLogin(){
+        if ("{{ logined }}"==="False"){
+            $(".container-fluid").empty();
+            tip_login.modal("show");
+            tip_login.on('hidden.bs.modal', function (e) {
+                location.href="/server/login"
+            })
+        }
     }
 
 </script>
