@@ -2,21 +2,20 @@ from django.db import models
 from extra_app.DjangoUeditor.models import UEditorField
 # Create your models here.
 
-
 class article(models.Model):
     articleId=models.AutoField(primary_key=True)
-    adminId=models.ForeignKey(to="admin",to_field="adminId",on_delete=None)
-    menuId=models.ForeignKey(to="menu",to_field="menuId",on_delete=None)
-    sourceId=models.ForeignKey(to="source",to_field="sourceId",on_delete=None)
-    browserNum=models.IntegerField()
-    articleStatus=models.IntegerField()
+    adminId=models.IntegerField(default=1)
+    menuId=models.IntegerField(default=1)
+    sourceId=models.IntegerField(default=1)
+    browserNum=models.IntegerField(default=0)
+    articleStatus=models.IntegerField(default=0)
     heading=models.CharField(max_length=250)
-    thumb=models.CharField(max_length=250)
+    thumb=models.CharField(max_length=250,default='compass.png')
     modifydate=models.DateTimeField(auto_now=True)
 
 class articlecontent(models.Model):
     contentId=models.AutoField(primary_key=True)
-    articleId=models.ForeignKey(to="article",to_field="articleId",on_delete=models.CASCADE)
+    articleId=models.IntegerField()
     contents=UEditorField()
 
 class source(models.Model):
