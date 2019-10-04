@@ -113,7 +113,14 @@ def delMenu(request):
     return HttpResponse(returnData(0,"删除成功"),content_type="application/json; charset=utf-8")
 
 def articleList(request):
-    print(models.article.objects.values())
+    articleResult=models.article.objects.values()
+    articleContentResult=models.article.objects.values()
+    articleResult=[]
+    # context={
+    #     "articleList":
+    # }
+
+    print()
     return render(request,"server/articleList.html")
 class EditorForm(forms.Form):
     content = UEditorField('',initial="",width=800, height=300,toolbars="full",imagePath="/static/images/", filePath="/static/files/",upload_settings={"imageMaxSize":1204000},settings={})
