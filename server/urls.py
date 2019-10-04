@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.urls import path
 from server import views
-
 urlpatterns = [
     path('serverIndex/', views.index),
     path("clearAdminInfo/",views.clearAdminInfo),
+    path("login/",views.login),
     path("menu/",views.menu),
     path("addmenu/",views.addmenu),
-    path("login/",views.login),
+    path("delmenu/",views.delMenu),
     path("savemenu/",views.savemenu),
     path("loginCheck/",views.loginCheck),
     path("articleList/",views.articleList),

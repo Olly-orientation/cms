@@ -1,12 +1,13 @@
 from django.db import models
-from DjangoUeditor.models import UEditorField
+from extra_app.DjangoUeditor.models import UEditorField
 # Create your models here.
+
 
 class article(models.Model):
     articleId=models.AutoField(primary_key=True)
-    authorId=models.IntegerField()
-    columnId=models.IntegerField()
-    sourceId=models.IntegerField()
+    adminId=models.ForeignKey(to="admin",to_field="adminId",on_delete=None)
+    menuId=models.ForeignKey(to="menu",to_field="menuId",on_delete=None)
+    sourceId=models.ForeignKey(to="source",to_field="sourceId",on_delete=None)
     browserNum=models.IntegerField()
     articleStatus=models.IntegerField()
     heading=models.CharField(max_length=250)
@@ -15,8 +16,8 @@ class article(models.Model):
 
 class articlecontent(models.Model):
     contentId=models.AutoField(primary_key=True)
-    articleId=models.IntegerField()
-    contents=UEditorField('内容', width=600, height=300, toolbars="full", imagePath="", filePath="",upload_settings={"imageMaxSize":1204000},settings={})
+    articleId=models.ForeignKey(to="article",to_field="articleId",on_delete=models.CASCADE)
+    contents=UEditorField()
 
 class source(models.Model):
     sourceId=models.AutoField(primary_key=True)
@@ -40,5 +41,4 @@ class admin(models.Model):
     adminId=models.AutoField(primary_key=True)
     adminname=models.CharField(max_length=50)
     password=models.CharField(max_length=20,default='')
-
-
+    email=models.CharField(max_length=100,null=True)

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,10 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "server",
-    "DjangoUeditor",
+    "extra_app.DjangoUeditor",
     "client"
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

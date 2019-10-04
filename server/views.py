@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from server import models
 from django.forms import forms
-from DjangoUeditor.forms import UEditorField
+from extra_app.DjangoUeditor.forms import UEditorField
 
 
 import json
@@ -67,22 +67,53 @@ def menu(request):
     }
     return render(request,"server/menu.html",context)
 def addmenu(request):
+    '''
+    渲染添加菜单页面
+    :param request:
+    :return:
+    '''
     id=request.GET.get("id")
     context={}
     if id:
         context["menuInfo"]=models.menu.objects.filter(menuId=id).get()
         context["edit"]="true"
+        context["id"]=id
 
     return render(request,"server/add_menu.html",context)
 def savemenu(request):
+    '''
+    将修改好的或者新增的菜单放入数据库中
+    :param request:
+    :return:
+    '''
     menuName=request.GET.get("menuName")
     status=request.GET.get("status")
+    id=request.GET.get("menuId")
+    if id:
+        #修改菜单
+        models.menu.objects.filter(menuId=id).update(menuName=menuName,menuStatus=status)
+        return HttpResponse(returnData(0,"修改成功"),content_type="application/json; charset=utf-8")
+    else:
+        try:
+            models.menu.objects.create(menuName=menuName,menuStatus=status)
+            return HttpResponse(returnData(0,"添加成功"),content_type="application/json; charset=utf-8")
+        except Exception as e:
+            return HttpResponse(returnData(1,"添加失败"),content_type="application/json; charset=utf-8")
+def delMenu(request):
+    '''
+    删除文章的方法
+    :param request:
+    :return:
+    '''
+    menuId=request.GET.get("menuId")
     try:
-        models.menu.objects.create(menuName=menuName)
+        models.menu.objects.get(menuId=menuId).delete()
     except Exception as e:
-        return HttpResponse(123)
-def articleList(request):
+        return HttpResponse(returnData(1,"删除失败"),content_type="application/json; charset=utf-8")
+    return HttpResponse(returnData(0,"删除成功"),content_type="application/json; charset=utf-8")
 
+def articleList(request):
+    print(models.article.objects.values())
     return render(request,"server/articleList.html")
 class EditorForm(forms.Form):
     content = UEditorField('',initial="",width=800, height=300,toolbars="full",imagePath="/static/images/", filePath="/static/files/",upload_settings={"imageMaxSize":1204000},settings={})

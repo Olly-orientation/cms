@@ -58,6 +58,25 @@
                 </table>
             </div>
         </div>
+        {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="tips"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -67,7 +86,13 @@
         var manageBtn;
         var editBtn;
         var delBtn;
+        {#标配模态框变量#}
+        var modalPanel;
+        var tips;
+        var returnStatus;
         function init() {
+            modalPanel=$("#modalHint");
+            tips=modalPanel.find(".tips");
             manageBtn=$(".menumanagebtn");
             manageBtn.on("click",gotoManage)
 
@@ -80,7 +105,28 @@
             location.href="/server/addmenu/?id="+_menuId
         }
         function delMenu(_menuId){
-            console.log("删除")
+            $.ajax({
+                method:"get",
+                url:"/server/delmenu",
+                data:{
+                    "menuId":_menuId
+                },
+                success:function(data){
+                    {#模态框标准提示信息装填#}
+                    returnStatus=data;
+                    tips.html(returnStatus["tips"]);
+                    showModal()
+                }
+            });
+        }
+        {#标配模态框函数#}
+        function showModal(){
+            modalPanel.modal("show");
+            modalPanel.on('hidden.bs.modal', function (e) {
+                if(returnStatus["status"]===0){
+                    location.reload()
+                }
+            })
         }
     {% endblock %}
 </script>

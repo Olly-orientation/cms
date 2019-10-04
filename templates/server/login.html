@@ -145,7 +145,6 @@
             },
             submitHandler:function(form){
                 loginForm.ajaxSubmit(function(data){
-                    console.log(data)
                     loginStatus=data;
                     tips.html(loginStatus["tips"]);
                     showModal()

@@ -18,6 +18,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path("server/",include("server.urls")),
-    path("ueditor/",include("DjangoUeditor.urls")),
+    path("ueditor/",include("extra_app.DjangoUeditor.urls")),
     path("client/", include("client.urls")),
 ]
