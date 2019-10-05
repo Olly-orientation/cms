@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import pymysql
 import sys
+import pymysql
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "server",
-    "extra_app.DjangoUeditor",
-    "client"
+    "client",
+    "DjangoUeditor"
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,4 +136,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS=(
     os.path.join(BASE_DIR,"static"),
 )
-

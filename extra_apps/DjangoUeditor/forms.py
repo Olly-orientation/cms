@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from extra_app.DjangoUeditor.widgets import UEditorWidget
-from extra_app.DjangoUeditor.models import UEditorField as ModelUEditorField
+from DjangoUeditor.widgets import UEditorWidget
+from DjangoUeditor.models import UEditorField as ModelUEditorField
 
 
 class UEditorField(forms.CharField):

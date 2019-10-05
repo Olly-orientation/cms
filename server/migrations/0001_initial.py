@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import extra_app.DjangoUeditor.models
+import DjangoUeditor.models
 
 
 class Migration(migrations.Migration):
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
             name='articlecontent',
             fields=[
                 ('contentId', models.AutoField(primary_key=True, serialize=False)),
-                ('contents', extra_app.DjangoUeditor.models.UEditorField()),
+                ('contents', DjangoUeditor.models.UEditorField()),
                 ('articleId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='server.article')),
             ],
         ),

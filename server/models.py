@@ -1,5 +1,6 @@
 from django.db import models
-from extra_app.DjangoUeditor.models import UEditorField
+from DjangoUeditor.models import UEditorField
+from datetime import datetime
 # Create your models here.
 
 class article(models.Model):
@@ -10,6 +11,7 @@ class article(models.Model):
     browserNum=models.IntegerField(default=0)
     articleStatus=models.IntegerField(default=0)
     heading=models.CharField(max_length=250)
+    headingColor=models.CharField(max_length=7,default="#000000")
     thumb=models.CharField(max_length=250,default='compass.png')
     modifydate=models.DateTimeField(auto_now=True)
 
@@ -31,6 +33,9 @@ class menu(models.Model):
 class position(models.Model):
     positionId=models.AutoField(primary_key=True)
     name=models.CharField(max_length=100)
+    description=models.CharField(max_length=100,default="无描述")
+    createTime=models.DateTimeField(auto_now_add=True)
+    positionStatus=models.IntegerField(default=0)
 
 class position_content(models.Model):
     positionId=models.IntegerField()
@@ -41,3 +46,5 @@ class admin(models.Model):
     adminname=models.CharField(max_length=50)
     password=models.CharField(max_length=20,default='')
     email=models.CharField(max_length=100,null=True)
+    introduction=UEditorField(null=True)
+    loginTime=models.DateTimeField(auto_now=True,null=True)

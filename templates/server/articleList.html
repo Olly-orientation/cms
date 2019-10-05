@@ -12,7 +12,11 @@
         }
     {% endblock %}
 </style>
-
+{% block sources %}
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/jquery.validate.js"></script>
+{% endblock %}
 {% block right %}
     <div class="container-fluid">
         <div class="row" style="margin-top:20px;">
@@ -23,41 +27,110 @@
         <div class="row">
            <div class="col-md-2">
                <button type="button" class="btn btn-primary article-manage-btn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加文章</button>
+               <hr/>
            </div>
         </div>
         <div class="row">
             <div class="col-md-12 menuList">
+             <form class="form-inline positionForm" method="get" action="/server/postPosition">
                 <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
-                      <th style="width: 5%">id</th>
-                      <th>标题</th>
-                      <th>栏目</th>
-                      <th>来源</th>
-                      <th>封面图</th>
-                      <th>更新时间</th>
-                      <th>点击量</th>
-                      <th>状态</th>
-                      <th style="width: 10%">操作</th>
+                        <th></th>
+                        <th style="width: 5%">id</th>
+                        <th>标题</th>
+                        <th>栏目</th>
+                        <th>来源</th>
+                        <th>封面图</th>
+                        <th>更新时间</th>
+                        <th>点击量</th>
+                        <th>状态</th>
+                        <th style="width: 10%">操作</th>
                     </tr>
                   </thead>
                   <tbody>
+                  {% for item in articleList  %}
                     <tr>
-                      <th scope="row">1</th>
-                      <td>震惊了</td>
-                      <td>军事</td>
-                      <td>腾讯新闻</td>
-                      <td>thumb</td>
-                      <td>2018</td>
-                      <td>54</td>
-                      <td>显示</td>
-                      <td>
-                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
-                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-                      </td>
+                        <td><input type="checkbox" name="selectedGroup" value="{{ item.articleId }}" ></td>
+                        <th scope="row">{{ item.articleId }}</th>
+                        <td>{{ item.heading }}</td>
+                        <td>{{ item.menuName }}</td>
+                        <td>{{ item.sourceName }}</td>
+                        <td><img src="/static/img/clientImg/{{ item.thumb }}" alt="新闻图片" style="width: 35px;"></td>
+                        <td>{{ item.modifydate|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ item.browserNum }}</td>
+                        {% if item.articleStatus == 0 %}
+                            <td>显示</td>
+                            {% else %}
+                            <td>隐藏</td>
+                        {% endif %}
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="editArticle({{ item.articleId }})"><span class="glyphicon glyphicon-edit"></span></button>
+                            <button type="button" class="btn btn-danger" onclick="delArticle({{ item.articleId }})"><span class="glyphicon glyphicon-trash"></span></button>
+                        </td>
                     </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
+                <div class="position">
+                        <div class="form-group">
+                            <select class="form-control" name="positionId">
+                                <option>请选择推送位</option>
+                                {% for item in positionList %}
+                                    <option value="{{ item.positionId }}">{{ item.name }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <button class="btn btn-primary"><span class="glyphicon glyphicon-arrow-up"></span> 推送</button>
+                </div>
+             </form>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <center>
+                <ul class="pagination">
+                    {% if current == 1%}
+                        <li class="disabled" id="previous"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                        {% else %}
+                        <li><a href="/server/articleList/?page={{ previous }}" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                    {% endif %}
+                    {% for item in pages %}
+                        {% if item == 1 %}
+                            <li class="active"><a href="/server/articleList/?page={{ item }}">1 <span class="sr-only">(current)</span></a></li>
+                            {% else %}
+                            <li><a href="/server/articleList/?page={{ item }}">{{ item }} <span class="sr-only"></span></a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if next <= pageNum %}
+                        <li id="next"><a href="/server/articleList/?page={{ next }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                        {% else %}
+                        <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+
+                    {% endif %}
+                 </ul>
+            </center>
+
+        </div>
+        {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="tips"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -67,13 +140,73 @@
 <script type="text/javascript">
     {% block js %}
         var manageBtn;
+        var positionForm;
+        {#标配模态框变量#}
+        var modalPanel;
+        var tips;
+        var returnStatus;
+        {#分页模块#}
+        var pagination;
         function init() {
+            pagination=$(".pagination");
+            switchBlock();
+            positionForm=$(".positionForm");
+            positionForm.validate({
+                submitHandler:function(form){
+                    positionForm.ajaxSubmit(function(data){
+                        returnStatus=data;
+                        tips.html(returnStatus["tips"]);
+                        showModal()
+                    });
+                }
+            });
+            modalPanel=$("#modalHint");
+            tips=modalPanel.find(".tips");
             manageBtn=$(".article-manage-btn");
-            manageBtn.on("click",gotoManage)
+            manageBtn.on("click",gotoManage);
         }
         init();
         function gotoManage() {
             location.href="/server/addArticle"
+        }
+        function editArticle(_articleId){
+            location.href="/server/addArticle/?id="+_articleId
+        }
+        function delArticle(_articleId){
+            $.ajax({
+                method:"get",
+                url:"/server/delArticle",
+                data:{
+                    "articleId":_articleId
+                },
+                success:function(data){
+                    {#模态框标准提示信息装填#}
+                    returnStatus=data;
+                    tips.html(returnStatus["tips"]);
+                    showModal()
+                }
+            });
+        }
+        function showModal(){
+            modalPanel.modal("show");
+            modalPanel.on('hidden.bs.modal', function (e) {
+                if(returnStatus["status"]===0){
+                    location.reload()
+                }
+            })
+        }
+        function switchBlock(){
+            {#初始状态下page是没有的#}
+            var page;
+            var li=pagination.find("li");
+            if(location["search"].split("?").length===1){
+            {#获取分页页数块下的li标签#}
+                page=1;
+            }else{
+                page=location["search"].split("?")[1].split("=")[1];
+            }
+            li.removeClass("active");
+            li.eq(Number(page)).attr("class","active")
         }
     {% endblock %}
 </script>

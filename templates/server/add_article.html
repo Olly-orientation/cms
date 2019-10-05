@@ -4,7 +4,6 @@
 {% endblock %}
 {% block sources %}
     <link rel="stylesheet" href="/static/css/common.css">
-    {{ editor.media }}
     <script src="/static/js/jquery.form.js"></script>
     <script src="/static/js/jquery.validate.js"></script>
 {% endblock %}
@@ -21,60 +20,66 @@
             <div class="row">
                 <div class="col-md-12">
                 {# form表单#}
-                    <form class="form-horizontal addMenu" method="get" action="/server/savemenu">
+                    <form class="form-horizontal addArticle" name="form" method="post" action="/server/saveArticle/" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-2 control-label">标题</label>
+                            <label class="col-sm-2 control-label">标题</label>
                             <div class="col-sm-10">
-                              <input type="text" class="form-control" name="menuName" placeholder="请输入标题">
+                              <input type="text" class="form-control" name="heading" placeholder="请输入标题" value="{{ articleInfo.heading }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">缩略图</label>
                             <div class="col-sm-10">
-                                <input type="file">
+                                <input type="file" name="articlethumb" value="{{ articleInfo.thumb }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标题颜色</label>
                             <div class="col-sm-10">
-                                <select class="form-control">
-                                    <option value="#000">选择颜色</option>
-                                    <option value="#F00">红色</option>
-                                    <option value="#0F0">绿色</option>
-                                    <option value="#00F">蓝色</option>
+                                <select class="form-control" name="headingColor" id="headingColor">
+                                    <option value="#000000">选择颜色（不选则为黑色）</option>
+                                    <option value="#FF0000">红色</option>
+                                    <option value="#00FF00">绿色</option>
+                                    <option value="#0000FF">蓝色</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属栏目</label>
                             <div class="col-sm-10">
-                                <select class="form-control">
-                                    <option value="#000">选择颜色</option>
-                                    <option value="#F00">红色</option>
-                                    <option value="#0F0">绿色</option>
-                                    <option value="#00F">蓝色</option>
+                                <select class="form-control" name="menuId">
+                                    <option value="1">请选择来源（不选则按默认执行）</option>
+                                    {% for item in menuResult %}
+                                        <option value="{{ item.menuId }}">{{ item.menuName }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">来源</label>
                             <div class="col-sm-10">
-                                <select class="form-control">
-                                    <option value="#000">选择颜色</option>
-                                    <option value="#F00">红色</option>
-                                    <option value="#0F0">绿色</option>
-                                    <option value="#00F">蓝色</option>
-                                </select>
+                                <label>
+                                    <select class="form-control" name="souceId">
+                                        <option value="1">请选择来源（不选则按默认执行）</option>
+                                        {% for item in sourceResult %}
+                                            <option value="{{ item.sourceId }}">{{ item.sourceName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputEmail3" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10">
+                                {{ editor.media }}
                                 {{ editor }}
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
+                                <input type="hidden" name="adminId" value="{{ adminId }}">
+                                <input type="hidden" name="articleId" value="{{ id }}">
                                 <button type="submit" class="btn btn-primary">添加</button>
                                 <button type="reset" class="btn btn-default">重填</button>
                             </div>
@@ -83,15 +88,43 @@
                 </div>
             </div>
         </div>
-
+        {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="tips"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% autoescape off %}
+        {{ initialContent }}
+    {% endautoescape %}
     </div>
 {% endblock %}
 <script type="text/javascript">
     {% block js %}
-        var form;
+        var articleForm;
+        {#标配模态框变量#}
+        var modalPanel;
+        var tips;
+        var returnStatus;
+        var id_content;
         function init() {
-            form=$(".addMenu");
-            form.validate({
+            modalPanel=$("#modalHint");
+            tips=modalPanel.find(".tips");
+            articleForm=$(".addArticle");
+            articleForm.validate({
                 rules:{
                     menuName:{
                         required:true
@@ -103,12 +136,48 @@
                     }
                 },
                 submitHandler:function(form){
-                    $(".addMenu").ajaxSubmit(function(data){
-                        console.log(data)
+                    articleForm.ajaxSubmit(function(data){
+                        returnStatus=data;
+                        tips.html(returnStatus["tips"]);
+                        showModal()
                     });
                 }
             });
+            fillContent()
         }
         init();
+        {#标配模态框函数#}
+        function showModal(){
+            modalPanel.modal("show");
+            modalPanel.on('hidden.bs.modal', function (e) {
+                if(returnStatus["status"]===0){
+                    location.href="/server/articleList"
+                }
+            })
+        }
+        function fillContent(){
+            {#所选颜色#}
+            var headingColor=$("#headingColor");
+            var optionGroup=headingColor.find("option");
+            var optionList=[];
+            {#所选栏目#}
+            for (var i=0;i<optionGroup.length;i++){
+                optionList.push(optionGroup.eq(i).attr("value"));
+            }
+            selectedColorIndex=optionList.indexOf("{{ articleInfo.headingColor }}");
+            if(selectedColorIndex!==-1){
+                optionGroup.eq(selectedColorIndex).prop("selected",true)
+                //判断ueditor 编辑器是否创建成功
+
+            }
+            $(function(){
+                id_content.addListener("ready", function () {
+                    // editor准备好之后才可以使用
+                        id_content.setContent(
+                                "{{ initialContent|escape  }}"
+                        );
+                });
+            });
+        }
     {% endblock %}
 </script>

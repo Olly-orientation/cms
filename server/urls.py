@@ -12,9 +12,14 @@ urlpatterns = [
     path("loginCheck/",views.loginCheck),
     path("articleList/",views.articleList),
     path("addArticle/",views.addArticle),
+    path("saveArticle/",views.saveArticle),
+    path("delArticle/",views.delArticle),
     path("adminList/",views.adminList),
     path("addAdmin/",views.addAdmin),
     path("positionList/",views.positionList),
+    path("postPosition/",views.postPosition),
     path("addPosition/",views.addPosition),
+    path("savePosition/",views.savePosition),
     path("positionContentList/",views.positionContentList),
+    path("delPositionContent/",views.delPositionContent)
 ]
