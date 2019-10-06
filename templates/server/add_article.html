@@ -55,13 +55,14 @@
                             <label class="col-sm-2 control-label">缩略图</label>
                             <div class="col-sm-10">
                                 <label for="fileinp">
-                                        <input type="button" id="btn" value="点我上传">
+                                    <input type="button" id="btn" value="点我上传">
                                     {% if articleInfo.thumb %}
                                         <span id="text">{{ articleInfo.thumb }}</span>
                                         {% else %}
                                         <span id="text">请上传图片</span>
                                     {% endif %}
                                         <input type="file" id="fileinp" name="articlethumb">
+                                    <img class="browse" alt="" width="100px">
                                 </label>
                             </div>
                         </div>
@@ -187,6 +188,11 @@
             });
             fillContent();
             changeFileName();
+            $("input[name='articlethumb']").change(function(){
+                var imgFile=this.files.item(0);
+                var _url=window.URL.createObjectURL(imgFile);
+                $(".browse").attr("src",_url);
+            })
         }
         init();
         {#标配模态框函数#}
@@ -255,5 +261,6 @@
                     $("#text").html($("#fileinp").val());
             })
         }
+
     {% endblock %}
 </script>

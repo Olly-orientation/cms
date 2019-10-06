@@ -23,8 +23,15 @@ def login(request):
     '''
     return render(request,"server/login.html")
 def loginCheck(request):
+    '''
+    登录检查函数
+    :param request:
+    :return:
+    '''
+    #获取表单提交的用户名和密码
     username=request.POST.get("username")
     password=request.POST.get("pwd")
+    #数据库查询相应的用户名和密码
     result=models.admin.objects.filter(adminname=username).values("adminname","password")
     if result:
         if result[0]["password"]==password:
@@ -32,8 +39,16 @@ def loginCheck(request):
             return HttpResponse(returnData(0,"登录成功"),content_type="application/json; charset=utf-8")
         return HttpResponse(returnData(1,"密码错误"),content_type="application/json; charset=utf-8")
     else:
+        #用户不存在
         return HttpResponse(returnData(1,"管理员不存在"),content_type="application/json; charset=utf-8")
 def index(request):
+    '''
+    后台首页渲染页面
+    在负责渲染页面的同时，负责检查管理员是否登录过后台，因而该方法对此做了一些验证，只有当管理员登录时
+    才能看到页面的信息
+    :param request:
+    :return:
+    '''
     admin=request.session.get("admin")
     context={}
     if not admin:
@@ -48,17 +63,35 @@ def index(request):
         context["positionCount"]=countPosition()
 
     return render(request,"server/serverIndex.html",context)
+
 def clearAdminInfo(request):
+    '''
+    清除session的方法，主要对应前端的退出按钮
+    :param request:
+    :return:
+    '''
     request.session.flush()
     return HttpResponseRedirect("/server/login")
 
 def countAdmin():
+    '''
+    计算有多少管理员
+    :return:
+    '''
     count=models.admin.objects.count()
     return count
 def countArticle():
+    '''
+    计算平台一共又多少条文章
+    :return:
+    '''
     count=models.article.objects.count()
     return count
 def countPosition():
+    '''
+    计算一共又多少推荐位
+    :return:
+    '''
     count=models.position.objects.count()
     return count
 
@@ -111,7 +144,7 @@ def savemenu(request):
             return HttpResponse(returnData(1,"添加失败"),content_type="application/json; charset=utf-8")
 def delMenu(request):
     '''
-    删除文章的方法
+    删除菜单的方法
     :param request:
     :return:
     '''
@@ -124,6 +157,11 @@ def delMenu(request):
 
 
 def articleList(request):
+    '''
+    文章列表页面渲染
+    :param request:
+    :return:
+    '''
     admin = request.session.get("admin")
     page=request.GET.get("page")
     if not page:
@@ -194,6 +232,10 @@ def switch(perPage,page):
     return dic
 
 def showPosition():
+    '''
+    查询所有的推荐位
+    :return:
+    '''
     result=models.position.objects.values()
     return result
 def postPosition(request):
@@ -228,6 +270,7 @@ def addArticle(request):
     :return:
     '''
     id = request.GET.get("id")
+    #渲染富文本编辑器
     editor=TestUEditorForm()
     admin=showAdmin(request)
     context={
@@ -235,9 +278,11 @@ def addArticle(request):
         "admin": admin,
         "adminId":models.admin.objects.get(adminname=admin).adminId
     }
+    #搜索所有的source和menu记录
     sourceResult = models.source.objects.values()
     menuResult = models.menu.objects.values()
     if id:
+        #若存在id，则表示文章是要进行编辑修改的，那么将和该文章相关的信息全部搜索到
         articleResult = models.article.objects.filter(articleId=id).values().get()
         selectedSource=models.source.objects.filter(sourceId=articleResult["sourceId"]).values().get()
         selectedMenu=models.menu.objects.filter(menuId=articleResult["menuId"]).values().get()
@@ -251,18 +296,25 @@ def addArticle(request):
     return render(request,"server/add_article.html",context)
 
 def sendInitialContent(request):
+    '''
+    设置富文本编辑器的初始值（仅限于编辑状态下使用）
+    :param request:
+    :return:
+    '''
     articleId=request.GET.get("articleId")
     articleContent = models.articlecontent.objects.filter(articleId=articleId).values()[0]["contents"]
     print(articleContent)
     return HttpResponse(json.dumps(articleContent), content_type="application/json; charset=utf-8")
 def delArticle(request):
     '''
-
+    删除文章
     :param request:
     :return:
     '''
     articleId = request.GET.get("articleId")
     try:
+        #文章删除时，删除关联的articlecontent表，如果该文章添加了推荐位，那么该推荐位内容记录
+        #也被删除
         models.article.objects.filter(articleId=articleId).delete()
         models.articlecontent.objects.filter(articleId=articleId).delete()
         models.articlecontent.objects.filter(articleId=articleId).delete()
@@ -307,14 +359,16 @@ def saveArticle(request):
         if articleId:
             if articlethumb:
                 models.article.objects.filter(articleId=articleId).update(heading=heading,thumb=filename,modifydate=datetime.now(),
-                                              adminId=adminId,menuId=menuId,sourceId=souceId,
-                                              headingColor=headingColor)
+                                                                          adminId=adminId,menuId=menuId,sourceId=souceId,
+                                                                          headingColor=headingColor)
                 models.articlecontent.objects.filter(articleId=articleId).update(contents=articleContent)
                 return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
             else:
+                #如果用户修改时不传图片，则不更新thumb字段
+                #这一部分相当于给管理员一个障眼法，实际上前端页面是可以看到自己之前上传的图片的，但实际并没有上传
                 models.article.objects.filter(articleId=articleId).update(heading=heading, modifydate=datetime.now(),
-                                              adminId=adminId, menuId=menuId, sourceId=souceId,
-                                              headingColor=headingColor)
+                                                                          adminId=adminId, menuId=menuId, sourceId=souceId,
+                                                                          headingColor=headingColor)
                 models.articlecontent.objects.update(contents=articleContent, articleId=articleId)
                 return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
         else:
@@ -331,6 +385,12 @@ def saveArticle(request):
         return HttpResponse(returnData(1, "编辑失败"), content_type="application/json; charset=utf-8")
 
 def getsize(size, format = 'kb'):
+    '''
+    文件转换大小
+    :param size: 文件大小
+    :param format: 转换成何种格式
+    :return:
+    '''
     p = 0
     if format == 'kb':
         p = 1
@@ -348,12 +408,22 @@ def addAdmin(request):
     return render(request,"server/add_admin.html")
 
 def positionList(request):
+    '''
+    推荐位管理渲染
+    :param request:
+    :return:
+    '''
     context = {
         "positionList": models.position.objects.values(),
         "admin": showAdmin(request)
     }
     return render(request,"server/positionList.html",context)
 def addPosition(request):
+    '''
+    添加推荐位
+    :param request:
+    :return:
+    '''
     id=request.GET.get("id")
     context={
         "admin":showAdmin(request)
@@ -364,6 +434,11 @@ def addPosition(request):
         context["id"]=id
     return render(request,"server/add_position.html",context)
 def savePosition(request):
+    '''
+    修改/添加推荐位
+    :param request:
+    :return:
+    '''
     positionName = request.GET.get("positionName")
     description=request.GET.get("description")
     status = request.GET.get("status")
@@ -380,6 +455,11 @@ def savePosition(request):
             return HttpResponse(returnData(1, "添加失败"), content_type="application/json; charset=utf-8")
 
 def delPosition(request):
+    '''
+    删除推荐位
+    :param request:
+    :return:
+    '''
     positionId = request.GET.get("positionId")
     try:
         models.position.objects.get(articleId=positionId).delete()
@@ -389,12 +469,22 @@ def delPosition(request):
     return HttpResponse(returnData(0, "删除成功"), content_type="application/json; charset=utf-8")
 
 def showAdmin(_request):
+    '''
+    用于展示页面最顶层右边的greetings
+    :param _request: 从别处views方法传过来的request
+    :return:
+    '''
     admin=_request.session.get("admin")
     return admin
 
 
 # 推荐位内容管理部分方法
 def positionContentList(request):
+    '''
+    推荐位内容管理页面渲染
+    :param request:
+    :return:
+    '''
     page = request.GET.get("page")
     if not page:
         page = 1
@@ -412,9 +502,10 @@ def positionContentList(request):
     }
     print("---------------", context["pageNum"])
     return render(request, "server/positionContentList.html",context)
+
 def positionContentSwitch(perPage,page):
     '''
-    为文章打造的分页显示方法
+    为推荐位内容打造的分页显示方法
     :param perPage: 每一页要显示的数量
     :param page: 传入的页码数
     :return:
@@ -446,9 +537,18 @@ def positionContentSwitch(perPage,page):
     }
     return dic
 def showPositionContent():
+    '''
+    获取推荐位内容的所有记录
+    :return:
+    '''
     result=models.position.objects.values()
     return result
 def delPositionContent(request):
+    '''
+    删除推荐位内容
+    :param request:
+    :return:
+    '''
     articleId = request.GET.get("articleId")
     try:
         models.position_content.objects.filter(articleId=articleId).delete()
