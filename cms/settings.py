@@ -90,7 +90,7 @@ DATABASES = {
         'HOST':'47.100.218.253',
         'PORT':'3306',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            'init_command': "SET sql_mode='traditional'"
         }
     },
 }

@@ -2,6 +2,29 @@
 {% block title %}
 <title>添加文章</title>
 {% endblock %}
+{% block css %}
+    <style type="text/css">
+        label{
+            position: relative;
+        }
+        #fileinp{
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+        #btn{
+            padding: 5px 10px;
+            background: #00b0f0;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+        }
+        #text{
+            color: red;
+        }
+    </style>
+{% endblock %}
 {% block sources %}
     <link rel="stylesheet" href="/static/css/common.css">
     <script src="/static/js/jquery.form.js"></script>
@@ -31,7 +54,15 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">缩略图</label>
                             <div class="col-sm-10">
-                                <input type="file" name="articlethumb" value="{{ articleInfo.thumb }}">
+                                <label for="fileinp">
+                                        <input type="button" id="btn" value="点我上传">
+                                    {% if articleInfo.thumb %}
+                                        <span id="text">{{ articleInfo.thumb }}</span>
+                                        {% else %}
+                                        <span id="text">请上传图片</span>
+                                    {% endif %}
+                                        <input type="file" id="fileinp" name="articlethumb">
+                                </label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,10 +79,13 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属栏目</label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="menuId">
-                                    <option value="1">请选择来源（不选则按默认执行）</option>
+                                <select class="form-control" name="menuId" id="menuGroup">
                                     {% for item in menuResult %}
-                                        <option value="{{ item.menuId }}">{{ item.menuName }}</option>
+                                        {% if item.menuId == 1 %}
+                                            <option value="{{ item.menuId }}">{{ item.menuName }}（默认项）</option>
+                                            {% else %}
+                                            <option value="{{ item.menuId }}">{{ item.menuName }}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
@@ -60,10 +94,13 @@
                             <label class="col-sm-2 control-label">来源</label>
                             <div class="col-sm-10">
                                 <label>
-                                    <select class="form-control" name="souceId">
-                                        <option value="1">请选择来源（不选则按默认执行）</option>
+                                    <select class="form-control" name="souceId" id="sourceGroup">
                                         {% for item in sourceResult %}
-                                            <option value="{{ item.sourceId }}">{{ item.sourceName }}</option>
+                                            {% if item.sourceId == 1 %}
+                                                <option value="{{ item.sourceId }}">{{ item.sourceName }}（默认项）</option>
+                                                {% else %}
+                                                <option value="{{ item.sourceId }}">{{ item.sourceName }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </label>
@@ -80,7 +117,11 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <input type="hidden" name="adminId" value="{{ adminId }}">
                                 <input type="hidden" name="articleId" value="{{ id }}">
-                                <button type="submit" class="btn btn-primary">添加</button>
+                                {% if id %}
+                                    <button type="submit" class="btn btn-primary">修改</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-primary">添加</button>
+                                {% endif %}
                                 <button type="reset" class="btn btn-default">重填</button>
                             </div>
                         </div>
@@ -120,6 +161,7 @@
         var tips;
         var returnStatus;
         var id_content;
+        var initialContent;
         function init() {
             modalPanel=$("#modalHint");
             tips=modalPanel.find(".tips");
@@ -143,7 +185,8 @@
                     });
                 }
             });
-            fillContent()
+            fillContent();
+            changeFileName();
         }
         init();
         {#标配模态框函数#}
@@ -160,24 +203,57 @@
             var headingColor=$("#headingColor");
             var optionGroup=headingColor.find("option");
             var optionList=[];
-            {#所选栏目#}
+            var menuGroup=$("#menuGroup").find("option");
+            var menuList=[];
+            var sourceGroup=$("#sourceGroup").find("option");
+            var sourceList=[];
             for (var i=0;i<optionGroup.length;i++){
                 optionList.push(optionGroup.eq(i).attr("value"));
             }
             selectedColorIndex=optionList.indexOf("{{ articleInfo.headingColor }}");
             if(selectedColorIndex!==-1){
                 optionGroup.eq(selectedColorIndex).prop("selected",true)
-                //判断ueditor 编辑器是否创建成功
-
             }
+            {#所选栏目#}
+            for (var j=0;j<menuGroup.length;j++){
+                menuList.push(menuGroup.eq(j).attr("value"));
+            }
+            selectedMenuIndex=menuList.indexOf("{{ articleInfo.menuId }}");
+            if(selectedMenuIndex!==-1){
+                menuGroup.eq(selectedMenuIndex).prop("selected",true);
+            }
+            {#所选来源#}
+            for (var a=0;a<sourceGroup.length;a++){
+                sourceList.push(sourceGroup.eq(a).attr("value"));
+            }
+            selectedSourceIndex=sourceList.indexOf("{{ articleInfo.sourceId }}");
+            if(selectedSourceIndex!==-1){
+                sourceGroup.eq(selectedSourceIndex).prop("selected",true)
+            }
+            //判断ueditor 编辑器是否创建成功
             $(function(){
-                id_content.addListener("ready", function () {
-                    // editor准备好之后才可以使用
-                        id_content.setContent(
-                                "{{ initialContent|escape  }}"
-                        );
-                });
+                if ("{{ id }}"){
+                    id_content.addListener("ready",setInitialContent);
+                }
             });
+        }
+        function setInitialContent(){
+            $.ajax({
+                type:"get",
+                url:"/server/sendInitialContent/",
+                data:{
+                    "articleId":"{{ id }}"
+                },
+                dataType:"json",
+                success:function (data) {
+                    id_content.setContent(data)
+                }
+            });
+        }
+        function changeFileName(){
+            $("#fileinp").change(function () {
+                    $("#text").html($("#fileinp").val());
+            })
         }
     {% endblock %}
 </script>

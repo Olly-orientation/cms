@@ -191,7 +191,7 @@
             modalPanel.modal("show");
             modalPanel.on('hidden.bs.modal', function (e) {
                 if(returnStatus["status"]===0){
-                    location.reload()
+                    location.href="/server/articleList/?page=1"
                 }
             })
         }

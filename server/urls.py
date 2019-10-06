@@ -12,6 +12,7 @@ urlpatterns = [
     path("loginCheck/",views.loginCheck),
     path("articleList/",views.articleList),
     path("addArticle/",views.addArticle),
+    path("sendInitialContent/",views.sendInitialContent),
     path("saveArticle/",views.saveArticle),
     path("delArticle/",views.delArticle),
     path("adminList/",views.adminList),

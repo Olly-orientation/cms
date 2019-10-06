@@ -239,19 +239,22 @@ def addArticle(request):
     menuResult = models.menu.objects.values()
     if id:
         articleResult = models.article.objects.filter(articleId=id).values().get()
-        articleContent=models.articlecontent.objects.filter(articleId=id).values()[0]["contents"]
         selectedSource=models.source.objects.filter(sourceId=articleResult["sourceId"]).values().get()
         selectedMenu=models.menu.objects.filter(menuId=articleResult["menuId"]).values().get()
         context["selectedSource"]=selectedSource
         context["selectedMenu"]=selectedMenu
         context["articleInfo"]=articleResult
-        context["initialContent"]=articleContent
         context["edit"]="true"
         context["id"]=id
     context["sourceResult"]=sourceResult
     context["menuResult"]=menuResult
     return render(request,"server/add_article.html",context)
 
+def sendInitialContent(request):
+    articleId=request.GET.get("articleId")
+    articleContent = models.articlecontent.objects.filter(articleId=articleId).values()[0]["contents"]
+    print(articleContent)
+    return HttpResponse(json.dumps(articleContent), content_type="application/json; charset=utf-8")
 def delArticle(request):
     '''
 
@@ -260,13 +263,10 @@ def delArticle(request):
     '''
     articleId = request.GET.get("articleId")
     try:
-        models.article.objects.get(articleId=articleId).delete()
-        models.articlecontent.objects.get(articleId=articleId).delete()
-        print("articleId",articleId)
-        positionResult=models.position_content.objects.filter(articleId=articleId)
-        print("----------wfaw--",positionResult)
-        if positionResult:
-            models.articlecontent.objects.filter(articleId=articleId).delete()
+        models.article.objects.filter(articleId=articleId).delete()
+        models.articlecontent.objects.filter(articleId=articleId).delete()
+        models.articlecontent.objects.filter(articleId=articleId).delete()
+        models.position_content.objects.filter(articleId=articleId).delete()
     except Exception as e:
         return HttpResponse(returnData(1, "删除失败"), content_type="application/json; charset=utf-8")
     return HttpResponse(returnData(0, "删除成功"), content_type="application/json; charset=utf-8")
@@ -279,8 +279,9 @@ def saveArticle(request):
     menuId=request.POST.get("menuId")
     souceId=request.POST.get("souceId")
     articleContent=request.POST.get("content")
-    articleId=request.POST.get("id")
+    articleId=request.POST.get("articleId")
     adminId=request.POST.get("adminId")
+    print(menuId)
     if articlethumb:
         # 存图片
         size=getsize(articlethumb.size,format="mb")
@@ -304,11 +305,21 @@ def saveArticle(request):
         filename="compass.png"
     try:
         if articleId:
-            models.article.objects.update(heading=heading,thumb=filename,modifydate=datetime.now(),adminId=adminId,menuId=menuId,sourceId=souceId,headingColor=headingColor)
-            models.articlecontent.objects.update(contents=articleContent,articleId=articleId)
-            return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
+            if articlethumb:
+                models.article.objects.filter(articleId=articleId).update(heading=heading,thumb=filename,modifydate=datetime.now(),
+                                              adminId=adminId,menuId=menuId,sourceId=souceId,
+                                              headingColor=headingColor)
+                models.articlecontent.objects.filter(articleId=articleId).update(contents=articleContent)
+                return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
+            else:
+                models.article.objects.filter(articleId=articleId).update(heading=heading, modifydate=datetime.now(),
+                                              adminId=adminId, menuId=menuId, sourceId=souceId,
+                                              headingColor=headingColor)
+                models.articlecontent.objects.update(contents=articleContent, articleId=articleId)
+                return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
         else:
             # 把除文章内容外的信息放入article表当中
+            print(datetime.now())
             insertLog=models.article.objects.create(heading=heading,thumb=filename,modifydate=datetime.now(),adminId=adminId,menuId=menuId,sourceId=souceId,headingColor=headingColor)
             # 获取插入article表后的id值获取
             insert_id=insertLog.articleId
