@@ -1,150 +1,231 @@
-{% include 'clientCommon/head.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路赞新闻</title>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css"/>
+    <script src="/static/bootstrap-3.3.7-dist/js/jquery.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <style type="text/css">
+        .carousel-inner img{
+				width: 900px;
+				height: 300px;
+			}
+        .row    li{
+            list-style: none
+        }
+         a:link{
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+{#导航#}
+   <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header ">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" style="margin-left: 20px">路赞新闻网</a>
+        </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navContent">
+            <li><a href="http://127.0.0.1:8000/client/index/">首页 <span class="sr-only">(current)</span></a></li>
+              {% for item in type_list %}
+                    <li><a href="http://127.0.0.1:8000/client/type/?type={{ item.id }}">{{ item.name }}</a></li>
+              {% endfor %}
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+   </nav>
 
 <div class="row" style="margin: 0">
-    <div class="col-xs-7 col-xs-offset-1">
-
-        <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="col-xs-7 col-xs-offset-1 content">
 
 
-            <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-             <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="row">
-                    <div class="col-xs-12"><!-- .weghiet -->
-                        <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                            <div class="col-sm-3 text-center">
-                                <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                            </div>
-                            <div class="col-sm-9 text-left">
-                                <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                                <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                                <span class="post-date">Posted On July 22, 2016</span>
-                                <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-             <div class="row">
-                <div class="col-xs-12"><!-- .weghiet -->
-                    <div class="row" style="border-bottom: 2px solid lightgray;padding-bottom: 5px">
-                        <div class="col-sm-3 text-center">
-                            <img src="/static/img/clientImg/tour1.jpg" alt="inimgsmall" style="width: 100%;height: 100%;margin-top: 35px">
-                        </div>
-                        <div class="col-sm-9 text-left">
-                            <h4 style="padding:20px 0 0 0"><a href="#">TV host’s hand impaled on nail in failed magic trick</a></h4>
-                            <p style="padding:0 0 10px 0">哦都是金佛山的家公司的囧傻吊港囧十多家公司对接公司递交给哦时间大概哦司机都给十多个敢死队</p >
-                            <span class="post-date">Posted On July 22, 2016</span>
-                            <span class="glyphicon glyphicon-education" style="color: #5bc0de">100</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
     </div>
 
 
     <div class="col-xs-3" style="margin-left: 50px;">
-        {%  include 'clientCommon/rank.html' %}
-        {%  include 'clientCommon/rightAd.html' %}
+
+    <div>
+  {#排行#}
+     <table class="table">
+      <thead>
+        <tr>
+          <th scope="row" class="text-center">
+              <h4 style="margin: 0">文章排行</h4>
+              <span style="color: darkgrey">TOP ARTICLES</span>
+           </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th >
+              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.oneArticle.type }}&id={{ rankDict.oneArticle.id }}">
+                <h3>
+                    <span class="text-center" style="display:inline-block;width: 20px;background: #ff0000;color: #fff;">{{ rankDict.oneArticle.rank }}</span>
+                     {{ rankDict.oneArticle.heading }}
+                </h3>
+                </a>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.twoArticle.type }}&id={{ rankDict.twoArticle.id }}">
+              <h5>
+                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.twoArticle.rank }}</span>
+                {{ rankDict.twoArticle.heading }}
+              </h5>
+              </a>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.threeArticle.type }}&id={{ rankDict.threeArticle.id }}">
+              <h5>
+                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.threeArticle.rank }}</span>
+                {{ rankDict.threeArticle.heading }}
+              </h5>
+              </a>
+          </th>
+        </tr>
+
+         <tr>
+          <th>
+              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fourArticle.type }}&id={{ rankDict.fourArticle.id }}">
+              <h5>
+                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fourArticle.rank }}</span>
+                {{ rankDict.fourArticle.heading }}
+              </h5>
+              </a>
+          </th>
+        </tr>
+
+         <tr>
+          <th>
+              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fiveArticle.type }}&id={{ rankDict.fiveArticle.id }}">
+              <h5>
+                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fiveArticle.rank }}</span>
+                {{ rankDict.fiveArticle.heading }}
+              </h5>
+              </a>
+          </th>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+       <div>
+            {% for item in rightAdImglist %}
+            <div class="row" style="position: relative;">
+                <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px">
+                <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width:97%;overflow: hidden;position: absolute;bottom: 13%;left: 1.5%">{{ item.heading }}</p>
+            </div>
+            {% endfor %}
+       </div>
     </div>
 
 
 
 </div>
 
-<nav aria-label="#" class="text-center">
-      <ul class="pagination">
-        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-     </ul>
+<nav aria-label="#" class="text-center btnContent">
+
 </nav>
 
 
 
 </body>
+<script>
+    var li;
+    var type;
+    init()
+    function init(){
+        var str=location.href
+            if (str.split("&")[1]) {
+              var  index=str.split("&")[1].split("=")[1]
+              type=str.split("&")[0].split("=")[1]
+            }else {
+                 type=str.split("=")[1]
+            }
+        addActive()
+        if (index){
+            ajax(index)
+        }else {
+            ajax(1)
+        }
+
+    }
+function addActive() {
+        li=$(".navContent li")
+        var liLength=$(".navContent li").length
+    for (var i=0;i<liLength;i++){
+            if (i == type) {
+                li.eq(i).addClass("active")
+            }
+    }
+}
+function ajax(index) {
+ 	  $.ajax({
+			type:"get",
+			dataType:"json",
+			url:"http://127.0.0.1:8000/client/typeList/",
+            data:{
+			    type:type,
+                index:index,
+                num:7
+            },
+			success:function(data) {
+                //处理接收过来的数据
+                console.log(data)
+                maxPage=Math.ceil(data["allNum"]/7)
+                articleContent(data["articleList"])
+                btnContent(index,maxPage)
+            }
+		});
+ }
+  function articleContent(data) {
+    var articleContent=""
+     for (var i = 0; i < data.length; i++) {
+        var str = ""
+        str = "<div class='row' style='margin-bottom:5px'><div class='col-xs-12'><div class='row' style='border-bottom: 2px solid lightgray;padding-bottom: 5px'><div class='col-sm-3 text-center'>"
+        str += "<img src='/static/img/clientImg/" + data[i]["thumb"] + "' alt='inimgsmall' style='width: 100%;height: 100%;margin-top: 35px'></div>"
+        str += "<div class='col-sm-9 text-left'><h4 style='padding:20px 0 0 0'><a href='http://127.0.0.1:8000/client/detail/?type="+data[i]["type"] +"&id=" + data[i]["id"] + "'>" + data[i]["heading"] + "</a></h4>"
+        str += " <p style='padding:0 0 10px 0'>" + data[i]["heading"] + "</p >"
+        str += " <span class='post-date'>" + data[i]["date"] + "</span>"
+        str += "<span class='glyphicon glyphicon-education' style='color: #5bc0de;padding-left:20px'>" + data[i]["num"] + "</span></div></div></div></div>"
+        articleContent += str;
+    }
+    $(".content").html(articleContent)
+ }
+function btnContent(index,maxPage) {
+    console.log(maxPage)
+      str="<ul class='pagination'>"
+     for (var j = 1; j < maxPage+1; j++) {
+        if (j == index){
+            str+="<li class='active'><a href='http://127.0.0.1:8000/client/type/?type="+type+"&index="+j+"'>"+j +"<span class='sr-only'>(current)</span></a></li>"
+        } else {
+          str+="  <li><a href='http://127.0.0.1:8000/client/type/?type="+type+"&index="+j+"'>"+j+"</a></li>"
+        }
+     }
+        str+="</ul>"
+         console.log(str)
+     console.log(btnContent)
+        $(".btnContent").html(str)
+
+ }
+
+</script>
 </html>

@@ -1,13 +1,9 @@
-<div class="row">
-    <img src="/static/img/clientImg/tour1.jpg" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px">
+{% for item in rightAdImglist %}
+<div class="row" style="position: relative;">
+    <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px">
+    <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width:97%;overflow: hidden;position: absolute;bottom: 13%;left: 1.5%">{{ item.heading }}</p>
 </div>
-<div class="row">
-    <img src="/static/img/clientImg/tour2.jpg" alt="My image" class="img-thumbnail" style="margin-bottom: 40px">
-</div>
-<div class="row">
-    <img src="/static/img/clientImg/tour3.jpg" alt="My image" class="img-thumbnail">
-</div>
-
+{% endfor %}
 
 
 

@@ -89,52 +89,55 @@
         </div>
     </div>
     <div class="row index">
-        <div class="col-md-6">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="col-md-2">
-                        <img src="/static/img/serverImg/max.png " alt="">
-                    </div>
-                    <div class="col-md-4 col-md-offset-6 indexInfo">
-                        <center>
-                            <p class="panel-title">文章最大阅读数</p>
-                        </center>
-                        <center><span class="indexNum">250</span></center>
+                <div class="col-md-6">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-2">
+                                <img src="/static/img/serverImg/max.png " alt="">
+                            </div>
+                            <div class="col-md-4 col-md-offset-6 indexInfo">
+                                <center>
+                                    <p class="panel-title">文章最大阅读数</p>
+                                </center>
+                                <center><span class="indexNum">{{ mostArticle.maxRead }}</span></center>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-2">
+                                <p><a href="http://127.0.0.1:8000/client/detail/?type={{ mostArticle.menuId }}&id={{ mostArticle.articleId }}">查看</a></p>
+                            </div>
+                            <div class="col-md-1 col-md-offset-9">
+                                <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="panel-body">
-                    <div class="col-md-2">
-                        <p><a href="#">查看</a></p>
+                <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <div class="col-md-1">
+                                    <img src="/static/img/serverImg/ranking.png " alt="">
+                                </div>
+                                <div class="col-md-4 col-md-offset-7 indexInfo">
+                                    <center>
+                                        <p class="panel-title">推荐位数</p>
+                                    </center>
+                                    <center><span class="indexNum">{{ positionCount }}</span></center>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-2">
+                                    <p><a href="/server/positionList">查看</a></p>
+                                </div>
+                                <div class="col-md-1 col-md-offset-9">
+                                    <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-1 col-md-offset-9">
-                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
-                    </div>
-                </div>
-            </div>
+
         </div>
-        <div class="col-md-6">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="col-md-1">
-                        <img src="/static/img/serverImg/ranking.png " alt="">
-                    </div>
-                    <div class="col-md-4 col-md-offset-7 indexInfo">
-                        <center>
-                            <p class="panel-title">推荐位数</p>
-                        </center>
-                        <center><span class="indexNum">{{ positionCount }}</span></center>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-2">
-                        <p><a href="/server/positionList">查看</a></p>
-                    </div>
-                    <div class="col-md-1 col-md-offset-9">
-                        <a href="#"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 {% endblock %}
 <script type="text/javascript">

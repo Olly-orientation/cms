@@ -2,9 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2136092b-f74b-4463-ad2b-d764d7743989" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/server/add_article.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/add_article.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/client/articleDetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/client/articleDetail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/client/articleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/client/articleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/client/clientIndex.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/client/clientIndex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/clientCommon/head.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/clientCommon/rank.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/clientCommon/rightAd.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/clientCommon/rightAd.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/add_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/add_admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/adminList.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/adminList.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/serverIndex.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/serverIndex.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,20 +43,77 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/server/add_article.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-164">
-              <caret line="62" column="23" selection-start-line="62" selection-start-column="23" selection-end-line="62" selection-end-column="23" />
+            <state relative-caret-position="-2296">
+              <caret line="36" column="15" selection-start-line="36" selection-start-column="15" selection-end-line="36" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="88">
+              <caret line="37" column="43" lean-forward="true" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="43" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/server/articleList.html">
+        <entry file="file://$PROJECT_DIR$/server/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="194" column="17" lean-forward="true" selection-start-line="194" selection-start-column="17" selection-end-line="194" selection-end-column="17" />
+            <state relative-caret-position="422">
+              <caret line="95" column="58" selection-start-line="95" selection-start-column="58" selection-end-line="95" selection-end-column="58" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/server/add_admin.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="992">
+              <caret line="45" column="42" lean-forward="true" selection-start-line="45" selection-start-column="42" selection-end-line="45" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/server/serverIndex.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1313">
+              <caret line="123" column="32" selection-start-line="123" selection-start-column="32" selection-end-line="123" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/server/adminList.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1440">
+              <caret line="42" column="40" lean-forward="true" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+              <folding>
+                <element signature="n#style#0;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#div#2;n#div#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,12 +131,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>editor.options</find>
-      <find>DjangoUeditor</find>
-      <find>date</find>
-      <find>showPosition</find>
       <find>countPage</find>
-      <find>showAdmin</find>
       <find>addArti</find>
       <find>hidden</find>
       <find>UE</find>
@@ -80,7 +144,6 @@
       <find>class</find>
       <find>上传文件</find>
       <find>pic_upload</find>
-      <find>addArticle</find>
       <find>upLoad</find>
       <find>articleInfo</find>
       <find>setcontent</find>
@@ -92,6 +155,12 @@
       <find>menuGroup</find>
       <find>delAr</find>
       <find>img</find>
+      <find>addArticle</find>
+      <find>adminList</find>
+      <find>addA</find>
+      <find>headImg</find>
+      <find>showAdmin</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -102,7 +171,6 @@
       <list>
         <option value="$PROJECT_DIR$/static/css/commonForServer.css" />
         <option value="$PROJECT_DIR$/static/css/common.css" />
-        <option value="$PROJECT_DIR$/templates/server/add_admin.html" />
         <option value="$PROJECT_DIR$/extra_app/DjangoUeditor3/DjangoUeditor/forms.py" />
         <option value="$PROJECT_DIR$/templates/server/text.html" />
         <option value="$PROJECT_DIR$/extra_app/DjangoUeditor3/DjangoUeditor/views.py" />
@@ -111,11 +179,8 @@
         <option value="$PROJECT_DIR$/extra_app/DjangoUeditor/static/ueditor/ueditor.config.js" />
         <option value="$PROJECT_DIR$/templates/clientCommon/rightAd.html" />
         <option value="$PROJECT_DIR$/templates/client/articleType.html" />
-        <option value="$PROJECT_DIR$/templates/client/clientIndex.html" />
         <option value="$PROJECT_DIR$/templates/common/commonForServer.html" />
         <option value="$PROJECT_DIR$/templates/server/add_positioncontent.html" />
-        <option value="$PROJECT_DIR$/templates/server/adminList.html" />
-        <option value="$PROJECT_DIR$/templates/server/serverIndex.html" />
         <option value="$PROJECT_DIR$/templates/server/login.html" />
         <option value="$PROJECT_DIR$/templates/server/menu.html" />
         <option value="$PROJECT_DIR$/templates/server/positionList.html" />
@@ -130,11 +195,15 @@
         <option value="$PROJECT_DIR$/extra_apps/DjangoUeditor/forms.py" />
         <option value="$PROJECT_DIR$/extra_apps/DjangoUeditor/views.py" />
         <option value="$PROJECT_DIR$/extra_apps/DjangoUeditor/static/ueditor/index.html" />
-        <option value="$PROJECT_DIR$/server/urls.py" />
         <option value="$PROJECT_DIR$/templates/server/articleList.html" />
         <option value="$PROJECT_DIR$/cms/settings.py" />
-        <option value="$PROJECT_DIR$/server/models.py" />
         <option value="$PROJECT_DIR$/templates/server/add_article.html" />
+        <option value="$PROJECT_DIR$/server/urls.py" />
+        <option value="$PROJECT_DIR$/templates/client/clientIndex.html" />
+        <option value="$PROJECT_DIR$/templates/server/serverIndex.html" />
+        <option value="$PROJECT_DIR$/templates/server/add_admin.html" />
+        <option value="$PROJECT_DIR$/templates/server/adminList.html" />
+        <option value="$PROJECT_DIR$/server/models.py" />
         <option value="$PROJECT_DIR$/server/views.py" />
       </list>
     </option>
@@ -150,33 +219,71 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
       <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="clientCommon" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cms" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="server" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../blog1" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\django\cms\extra_apps" />
-      <recent name="D:\work\django\cms\static\img" />
-      <recent name="D:\work\django\cms\server\migrations" />
-      <recent name="C:\work\cms1" />
-      <recent name="C:\work\cms1\static\img\clientImg" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\django\cms\static\img\clientImg" />
       <recent name="D:\work\django\cms\extra_app" />
       <recent name="D:\work\django\cms\static\img" />
       <recent name="D:\work\django\cms\static\img\serverImg" />
       <recent name="D:\work\django\cms\static" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\django\cms\extra_apps" />
+      <recent name="D:\work\django\cms\static\img" />
+      <recent name="D:\work\django\cms\server\migrations" />
+      <recent name="C:\work\cms1" />
+      <recent name="C:\work\cms1\static\img\clientImg" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -243,11 +350,15 @@
       <workItem from="1570154274836" duration="29222000" />
       <workItem from="1570238810932" duration="35886000" />
       <workItem from="1570325937817" duration="10728000" />
+      <workItem from="1570451276363" duration="1150000" />
+      <workItem from="1570461210798" duration="962000" />
+      <workItem from="1570464196363" duration="749000" />
+      <workItem from="1570492618128" duration="3364000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="124220000" />
+    <option name="totallyTimeSpent" value="130445000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -260,13 +371,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27919462" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.295302" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.27375886" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.27375886" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -299,37 +411,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/client/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/migrations/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/migrations/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/extra_app/DjangoUeditor/models.py" />
-    <entry file="file://$PROJECT_DIR$/templates/server/serverIndex.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-13">
-          <caret line="128" column="42" selection-start-line="128" selection-start-column="42" selection-end-line="128" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="3" lean-forward="true" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/server/adminList.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="728">
-          <caret line="65" column="31" lean-forward="true" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/server/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
@@ -535,47 +616,94 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/models.py">
+    <entry file="file://$PROJECT_DIR$/templates/server/articleList.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="82" column="20" selection-start-line="82" selection-start-column="20" selection-end-line="82" selection-end-column="20" />
+        <state relative-caret-position="5432">
+          <caret line="194" column="17" selection-start-line="194" selection-start-column="17" selection-end-line="194" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/clientCommon/rank.html" />
+    <entry file="file://$PROJECT_DIR$/templates/clientCommon/head.html" />
+    <entry file="file://$PROJECT_DIR$/templates/client/clientIndex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="86" column="32" lean-forward="true" selection-start-line="86" selection-start-column="32" selection-end-line="86" selection-end-column="32" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#p#0;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/clientCommon/rightAd.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/server/add_article.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2296">
+          <caret line="36" column="15" selection-start-line="36" selection-start-column="15" selection-end-line="36" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-84">
-          <caret line="9" column="35" lean-forward="true" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+        <state relative-caret-position="375">
+          <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/server/articleList.html">
+    <entry file="file://$PROJECT_DIR$/server/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="194" column="17" lean-forward="true" selection-start-line="194" selection-start-column="17" selection-end-line="194" selection-end-column="17" />
+        <state relative-caret-position="422">
+          <caret line="95" column="58" selection-start-line="95" selection-start-column="58" selection-end-line="95" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/server/serverIndex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1313">
+          <caret line="123" column="32" selection-start-line="123" selection-start-column="32" selection-end-line="123" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/server/add_admin.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="992">
+          <caret line="45" column="42" lean-forward="true" selection-start-line="45" selection-start-column="42" selection-end-line="45" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/server/adminList.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1440">
+          <caret line="42" column="40" lean-forward="true" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+          <folding>
+            <element signature="n#style#0;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#div#2;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="554" column="26" lean-forward="true" selection-start-line="554" selection-start-column="26" selection-end-line="554" selection-end-column="26" />
+        <state relative-caret-position="88">
+          <caret line="37" column="43" lean-forward="true" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="43" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/server/add_article.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-164">
-          <caret line="62" column="23" selection-start-line="62" selection-start-column="23" selection-end-line="62" selection-end-column="23" />
         </state>
       </provider>
     </entry>

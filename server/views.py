@@ -5,6 +5,7 @@ from server import models
 from django.forms import forms
 from DjangoUeditor.forms import  UEditorField
 from datetime import datetime
+from django.db.models import Max
 import math
 import json
 # Create your views here.
@@ -60,9 +61,11 @@ def index(request):
         context["admin"]=showAdmin(request)
         context["adminCount"]=countAdmin()
         context["articleCount"]=countArticle()
+        context["mostArticle"]=searchMaxArticle()
         context["positionCount"]=countPosition()
 
     return render(request,"server/serverIndex.html",context)
+
 
 def clearAdminInfo(request):
     '''
@@ -80,6 +83,16 @@ def countAdmin():
     '''
     count=models.admin.objects.count()
     return count
+def searchMaxArticle():
+    '''
+    找最大浏览量的文章
+    :return:
+    '''
+    result=models.article.objects.aggregate(maxRead = Max("browserNum"))
+    articleInfo=models.article.objects.filter(browserNum=result["maxRead"]).values("articleId","menuId").get()
+    result.update(articleInfo)
+    return result
+
 def countArticle():
     '''
     计算平台一共又多少条文章
@@ -303,7 +316,6 @@ def sendInitialContent(request):
     '''
     articleId=request.GET.get("articleId")
     articleContent = models.articlecontent.objects.filter(articleId=articleId).values()[0]["contents"]
-    print(articleContent)
     return HttpResponse(json.dumps(articleContent), content_type="application/json; charset=utf-8")
 def delArticle(request):
     '''
@@ -333,7 +345,6 @@ def saveArticle(request):
     articleContent=request.POST.get("content")
     articleId=request.POST.get("articleId")
     adminId=request.POST.get("adminId")
-    print(menuId)
     if articlethumb:
         # 存图片
         size=getsize(articlethumb.size,format="mb")
@@ -369,11 +380,10 @@ def saveArticle(request):
                 models.article.objects.filter(articleId=articleId).update(heading=heading, modifydate=datetime.now(),
                                                                           adminId=adminId, menuId=menuId, sourceId=souceId,
                                                                           headingColor=headingColor)
-                models.articlecontent.objects.update(contents=articleContent, articleId=articleId)
+                models.articlecontent.objects.filter(articleId=articleId).update(contents=articleContent, articleId=articleId)
                 return HttpResponse(returnData(0, "编辑成功"), content_type="application/json; charset=utf-8")
         else:
             # 把除文章内容外的信息放入article表当中
-            print(datetime.now())
             insertLog=models.article.objects.create(heading=heading,thumb=filename,modifydate=datetime.now(),adminId=adminId,menuId=menuId,sourceId=souceId,headingColor=headingColor)
             # 获取插入article表后的id值获取
             insert_id=insertLog.articleId
@@ -401,11 +411,97 @@ def getsize(size, format = 'kb'):
     size /= math.pow(1024, p)
     return "%0.2f"%size
 
-
 def adminList(request):
-    return render(request,"server/adminList.html")
+    getServerData = models.admin.objects.all()
+    returnList=[]
+    for item in getServerData:
+        dic={
+            "id":item.adminId,
+            "name": item.adminname,
+            "pwd": item.password,
+            "email": item.email,
+            "logintime":item.loginTime.strftime("%y-%m-%d %H:%M:%S"),
+            "headImg": item.headImg,
+        }
+        returnList.append(dic)
+
+    context={
+        "list":returnList,
+        "admin":showAdmin(request)
+    }
+    return render(request,"server/adminList.html",context)
+def delAdmin(request):
+    id=request.GET.get("id")
+    try:
+        models.admin.objects.filter(adminId=id).delete()
+    except Exception as e:
+        return HttpResponse(returnData(1, "删除失败"))
+
+    return HttpResponse(returnData(0,"删除成功"))
+def changeAdmin(request):
+    id = request.GET.get("id")
+    getAdminList = models.admin.objects.values("adminname", "headImg", "password", "email").get(adminId=id)
+    context = {
+        "intro": TestUEditorForm(),
+        "id": id,
+        "getAdminList": getAdminList
+    }
+    return render(request, "server/changeAdmin.html", context)
+
+
 def addAdmin(request):
-    return render(request,"server/add_admin.html")
+    id=request.GET.get("id")
+    context = {
+        "intro": TestUEditorForm(),
+        "id":id,
+        "admin":showAdmin(request)
+    }
+    return render(request, "server/add_admin.html", context)
+def changeAdminHandle(request):
+    id = request.GET.get("id")
+    name = request.POST.get("username")
+    pwd = request.POST.get("pwd")
+    email = request.POST.get("email")
+    content = request.POST.get("content")
+    headImg = request.FILES.get("headimg")
+    if headImg.name.split(".")[-1] not in ["jpg", "jpeg", "png"]:
+        print("文件类型不正确")
+        return HttpResponse(returnData(1, "文件类型不正确"))
+    filename = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
+    savePath = "static/img/clientImg/" + filename
+    with open(savePath, 'wb') as f:
+        for file in headImg.chunks():
+            f.write(file)
+            f.flush()
+    models.admin.objects.filter(adminId=id).update(adminname=name, password=pwd, email=email, introduction=content,loginTime=datetime.now(), headImg=savePath)
+    return HttpResponse(returnData(0, "修改成功"))
+
+def addAdminHandle(request):
+    name = request.POST.get("username")
+    pwd = request.POST.get("pwd")
+    email = request.POST.get("email")
+    content = request.POST.get("content")
+    headImg = request.FILES.get("headimg")
+    if headImg.name.split(".")[-1] not in ["jpg", "jpeg", "png"]:
+        print("文件类型不正确")
+        return HttpResponse(returnData(1, "文件类型不正确"))
+    filename = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
+    savePath = "static/img/clientImg/" + filename
+    with open(savePath, 'wb') as f:
+        for file in headImg.chunks():
+            f.write(file)
+            f.flush()
+    getServerData = models.admin.objects.filter(adminname = name ).all()
+    if len(getServerData) == 0:
+        print("当前用户不存在")
+        newAdmin = models.admin(adminname=name, password=pwd, email=email,introduction=content,loginTime=datetime.now(),headImg=savePath)
+        newAdmin.save()
+        return HttpResponse(returnData(0, "注册成功"))
+    # except Exception as e:
+    #     return HttpResponse(returnData(1,"注册失败"))
+
+    return HttpResponse(returnData(1,"注册失败,当前用户名已存在"))
+
 
 def positionList(request):
     '''
@@ -475,6 +571,7 @@ def showAdmin(_request):
     :return:
     '''
     admin=_request.session.get("admin")
+    print("------------",admin)
     return admin
 
 
@@ -500,7 +597,6 @@ def positionContentList(request):
         "previous": positionContentInfo["previousPage"],
         "next": positionContentInfo["nextPage"]
     }
-    print("---------------", context["pageNum"])
     return render(request, "server/positionContentList.html",context)
 
 def positionContentSwitch(perPage,page):
@@ -525,7 +621,6 @@ def positionContentSwitch(perPage,page):
             positionResult = models.position.objects.filter(positionId=item["positionId"]).values().get()
             item.update(articleResult)
             item.update(positionResult)
-            print(item)
         except Exception as e:
             print(e)
     dic={

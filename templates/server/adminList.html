@@ -17,45 +17,48 @@
     <div class="container-fluid">
         <div class="row" style="margin-top:20px;">
             <div class="col-md-12 col-lg-12">
-                <p class="location"><a class="text-primary" href="/server/menu">菜单管理</a> / 菜单列表</p>
+                <p class="location"><a class="text-primary" href="http://127.0.0.1:8000/server/adminList/">用户管理</a> / 用户列表</p>
             </div>
         </div>
         <div class="row">
            <div class="col-md-2">
-               <button type="button" class="btn btn-primary menumanagebtn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加菜单</button>
+               <button type="button" class="btn btn-primary menumanagebtn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加管理员</button>
            </div>
         </div>
-        <div class="row">
+        <div class="row" style="margin-top: 10px">
             <div class="col-md-12 menuList">
                 <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th style="width: 5%">id</th>
-                      <th>菜单名</th>
-                      <th>状态</th>
-                      <th style="width: 10%">操作</th>
+                      <th>账号</th>
+                      <th>密码</th>
+                      <th>邮箱</th>
+                      <th>登录时间</th>
+                      <th>头像</th>
+                      <th style="width: 13%">操作</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>科技</td>
-                      <td>显示</td>
-                      <td>
-                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
-                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-                      </td>
-                    </tr>
-                  <tr>
-                      <th scope="row">1</th>
-                      <td>科技</td>
-                      <td>显示</td>
-                      <td>
-                          <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
-                          <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-                      </td>
-                    </tr>
-                  </tbody>
+                  {% for item in list %}
+                    <tr style="height: 40px;">
+                      <td scope="row">{{ item.id }}</td>
+                        <td style="line-height: 40px"> {{ item.name }}</td>
+                        <td style="line-height: 40px"> {{ item.pwd }}</td>
+                        <td style="line-height: 40px"> {{ item.email }}</td>
+                        <td style="line-height: 40px">{{ item.logintime }}</td>
+                        <td style="line-height: 40px">
+                           <img src="/{{ item.headImg }}" alt="用户头像" style="height: 40px;width: 40px">
+                        </td>
+                        <td style="line-height: 40px">
+                          <button class="btn btn-primary change" onclick="changeFun({{ item.id }})"><span class="glyphicon glyphicon-edit"></span></button>
+                          <button class="btn btn-danger del" onclick="delFun({{ item.id }})"><span class="glyphicon glyphicon-trash"></span></button>
+                        </td>
+                      </tr>
+
+                  {% endfor %}
+
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -66,13 +69,34 @@
 <script type="text/javascript">
     {% block js %}
         var manageBtn;
+        init();
         function init() {
             manageBtn=$(".menumanagebtn");
             manageBtn.on("click",gotoManage)
         }
-        init();
         function gotoManage() {
-            location.href="/server/addmenu"
+            location.href="http://127.0.0.1:8000/server/addAdmin/"
+        }
+        function delFun(id) {
+            $.ajax({
+			type:"get",
+            data:{
+			    id:id
+            },
+			dataType:"json",
+			url:"http://127.0.0.1:8000/server/delAdmin/",
+			success:function(data) {
+                //处理接收过来的数据
+                $(".modal-body").html(data["tips"]);
+                $('#myModal').modal('toggle');
+                if (data["status"] === 0){
+                    location.href="http://127.0.0.1:8000/server/adminList/"
+                }
+			}
+		});
+        }
+        function changeFun(id) {
+            location.href = "http://127.0.0.1:8000/server/changeAdmin/?id="+id
         }
     {% endblock %}
 </script>

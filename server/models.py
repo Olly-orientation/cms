@@ -87,9 +87,10 @@ class admin(models.Model):
     introduction----简介
     loginTime----登录时间
     '''
-    adminId=models.AutoField(primary_key=True)
-    adminname=models.CharField(max_length=50)
-    password=models.CharField(max_length=20,default='')
-    email=models.CharField(max_length=100,null=True)
-    introduction=UEditorField(null=True)
-    loginTime=models.DateTimeField(auto_now=True,null=True)
+    adminId = models.AutoField(primary_key=True)
+    adminname = models.CharField(max_length=50)
+    password = models.CharField(max_length=20, default='')
+    email = models.CharField(max_length=100, null=True)
+    introduction = UEditorField(null=True)
+    loginTime = models.DateTimeField(auto_now=True, null=True)
+    headImg = models.CharField(max_length=100, default='')
