@@ -1,168 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>路赞新闻</title>
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css"/>
-    <script src="/static/bootstrap-3.3.7-dist/js/jquery.js"></script>
-    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <style type="text/css">
-        .carousel-inner img{
-				width: 900px;
-				height: 300px;
-			}
-        .row    li{
-            list-style: none
-        }
-        a:link{
-            color: #000000;
-        }
-    </style>
-</head>
-<body>
-{#导航#}
-   <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header ">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" style="margin-left: 20px">路赞新闻网</a>
-        </div>
-                <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav  ">
-            <li class="active"><a href="http://127.0.0.1:8000/client/index/">首页 <span class="sr-only">(current)</span></a></li>
-              {% for item in type_list %}
-                <li><a href="http://127.0.0.1:8000/client/type/?type={{ item.id }}">{{ item.name }}</a></li>
-              {% endfor %}
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-   </nav>
-{#轮播图片。#}
-<div class="row" style="margin-right: 0">
-<div class="col-xs-6 " style="margin-left:40px;">
-<div id="carousel-example-captions" class="carousel slide" data-ride="carousel">
-      <ol class="carousel-indicators">
-        <li data-target="#carousel-example-captions" data-slide-to="0" class="active"></li>
-        <li data-target="#carousel-example-captions" data-slide-to="1" class=""></li>
-        <li data-target="#carousel-example-captions" data-slide-to="2" class=""></li>
-      </ol>
-      <div class="carousel-inner" role="listbox">
-      <div class="item active" style="width: 900px;height: 370px;overflow: hidden">
-          <img src="/static/img/clientImg/{{ slideImgDic.firstImg.thumb  }}" data-holder-rendered="true" style="width: 900px;height: 370px">
-          <div class="carousel-caption text-center" style="position: absolute;bottom: 10px;left: 5%;z-index: 15;width: 60%;" >
-            <p>{{ slideImgDic.firstImg.heading  }}</p>
-          </div>
-      </div>
-      {% for item in slideImgDic.otherImg %}
-{#          {% if item %}#}
-       <div class="item" style="width: 900px;height:370px;overflow: hidden">
-          <img data-src="holder.js/900x500/auto/#777:#777" alt="900x500"  src="/static/img/clientImg/{{ item.thumb }}" data-holder-rendered="true" style="width: 900px;height: 370px">
-          <div class="carousel-caption" style="position: absolute;bottom: 10px;left: 5%;z-index: 15;width: 60%;">
-            <p>{{ slideImgDic.firstImg.heading  }}</p>
-          </div>
-       </div>
-      {% endfor %}
-      </div>
-      <a class="left carousel-control" href="#carousel-example-captions" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="right carousel-control" href="#carousel-example-captions" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
-    </div>
+{% include "clientCommon/header.html" %}
 
-</div>
-
-<div class="col-xs-2 " style="margin-left: 10px">
-{% for item in rightAdImglist %}
-        <div class="row" style="position: relative">
-            <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="width: 78%;height: 110px;margin-bottom: 20px">
-            <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width: 78%;overflow: hidden;position: absolute;bottom: 8%;">{{ item.heading }}</p>
-        </div>
-{% endfor %}
-</div>
-<div class="col-xs-3">
-{#排行#}
-     <table class="table">
-      <thead>
-        <tr>
-          <th scope="row" class="text-center">
-              <h4 style="margin: 0">文章排行</h4>
-              <span style="color: darkgrey">TOP ARTICLES</span>
-           </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th >
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.oneArticle.type }}&id={{ rankDict.oneArticle.id }}">
-                <h3>
-                    <span class="text-center" style="display:inline-block;width: 20px;background: #ff0000;color: #fff;">{{ rankDict.oneArticle.rank }}</span>
-                     {{ rankDict.oneArticle.heading }}
-                </h3>
+    {#轮播图片#}
+    <div class="row" style="margin-right: 0">
+        <div class="col-xs-6 " style="margin-left:40px;">
+            <div class="carousel slide" id="big-carousel" data-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    {% for item in giantPosition %}
+                        <div class="item">
+                            <img style="width: 100%;height: 400px" alt="900x500" src="/static/img/clientImg/{{ item.thumb }}" data-holder-rendered="true">
+                            <div class="carousel-caption">
+                                <h3>{{ item.heading }}</h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="left carousel-control" href="#big-carousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
                 </a>
-          </th>
-        </tr>
-
-        <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.twoArticle.type }}&id={{ rankDict.twoArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.twoArticle.rank }}</span>
-                {{ rankDict.twoArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-        <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.threeArticle.type }}&id={{ rankDict.threeArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.threeArticle.rank }}</span>
-                {{ rankDict.threeArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-         <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fourArticle.type }}&id={{ rankDict.fourArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fourArticle.rank }}</span>
-                {{ rankDict.fourArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-         <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fiveArticle.type }}&id={{ rankDict.fiveArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fiveArticle.rank }}</span>
-                {{ rankDict.fiveArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-      </tbody>
-    </table>
-
-</div>
-</div>
+                <a class="right carousel-control" href="#big-carousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="col-xs-2 " style="margin-left: 10px">
+        {% for item in rightAdImglist %}
+            <div class="row" style="position: relative">
+                <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="width: 78%;height: 110px;margin-bottom: 20px">
+                <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width: 78%;overflow: hidden;position: absolute;bottom: 8%;">{{ item.heading }}</p>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="col-xs-3">
+            {% include "clientCommon/rank.html" %}
+        </div>
+    </div>
 <div class="row" style="margin-right: 0">
 
 <div class="col-xs-7 col-xs-offset-1 content">
@@ -187,68 +60,72 @@
 
 
 <script>
-init()
-function init(){
-    console.log(location.href)
-    str=location.href
-    var index = str.split("=")[1]
-    if (index){
-         ajax(index)
-    }else {
-        ajax(1)
-    }
-}
-function ajax(index) {
-
- 	  $.ajax({
-			type:"get",
-			dataType:"json",
-			url:"http://127.0.0.1:8000/client/indexArticleList/",
-            data:{
-                index:index,
-                num:5
-            },
-			success:function(data) {
-                //处理接收过来的数据
-                console.log(data)
-                maxPage=Math.ceil(data["allNum"]/5)
-                articleContent(data["articleList"])
-                btnContent(index,maxPage)
-            }
-		});
- }
- function articleContent(data) {
-    var articleContent=""
-     for (var i = 0; i < data.length; i++) {
-        var str = ""
-        str = "<div class='row' style='margin-bottom:5px'><div class='col-xs-12'><div class='row' style='border-bottom: 2px solid lightgray;padding-bottom: 5px'><div class='col-sm-3 text-center'>"
-        str += "<img src='/static/img/clientImg/" + data[i]["thumb"] + "' alt='inimgsmall' style='width: 100%;height: 100%;margin-top: 35px'></div>"
-        str += "<div class='col-sm-9 text-left'><h4 style='padding:20px 0 0 0'><a href='http://127.0.0.1:8000/client/detail/?type="+data[i]["type"] +"&id=" + data[i]["id"] + "'>" + data[i]["heading"] + "</a></h4>"
-        str += " <p style='padding:0 0 10px 0'>" + data[i]["heading"] + "</p >"
-        str += " <span class='post-date'>" + data[i]["date"] + "</span>"
-        str += "<span class='glyphicon glyphicon-education' style='color: #5bc0de;padding-left:20px'>" + data[i]["num"] + "</span></div></div></div></div>"
-        articleContent += str;
-    }
-    $(".content").html(articleContent)
- }
-
- function btnContent(index,maxPage) {
-    console.log(maxPage)
-      str="<ul class='pagination'>"
-     for (var j = 1; j < maxPage+1; j++) {
-        if (j == index){
-            str+="<li class='active'><a href='http://127.0.0.1:8000/client/index/?index="+j+"'>"+j +"<span class='sr-only'>(current)</span></a></li>"
-        } else {
-          str+="  <li><a href='http://127.0.0.1:8000/client/index/?index="+j+"'>"+j+"</a></li>"
+    var carousel;
+    var str;
+    var index;
+    init();
+    function init(){
+        str=location.href;
+        index = str.split("=")[1];
+        carousel=$(".carousel");
+        changeSelectedStyle();
+        if (index){
+             ajax(index)
+        }else {
+            ajax(1)
         }
-     }
-        str+="</ul>"
-        {#btnContent+=str#}
-         console.log(str)
-     console.log(btnContent)
-        $(".btnContent").html(str)
+    }
+    function changeSelectedStyle(){
+        var slideItem=carousel.find(".item");
+        slideItem.eq(0).addClass("active");
+    }
+    function ajax(index) {
 
- }
+          $.ajax({
+                type:"get",
+                dataType:"json",
+                url:"/client/indexArticleList/",
+                data:{
+                    index:index,
+                    num:5
+                },
+                success:function(data) {
+                    //处理接收过来的数据
+                    maxPage=Math.ceil(data["allNum"]/5);
+                    console.log(data)
+                    articleContent(data["articleList"]);
+                    btnContent(index,maxPage)
+                }
+            });
+     }
+     function articleContent(data) {
+        var articleContent="";
+         for (var i = 0; i < data.length; i++) {
+            var str = "";
+            str = "<div class='row' style='margin-bottom:5px'><div class='col-xs-12'><div class='row' style='border-bottom: 2px solid lightgray;padding-bottom: 5px'><div class='col-sm-3 text-center'>"
+            str += "<img src='/static/img/clientImg/" + data[i]["thumb"] + "' alt='inimgsmall' style='width: 100%;height: 100%;margin-top: 35px'></div>"
+            str += "<div class='col-sm-9 text-left'><h4 style='padding:20px 0 0 0'><a href='http://127.0.0.1:8000/client/detail/?type="+data[i]["type"] +"&id=" + data[i]["id"] + "'>" + data[i]["heading"] + "</a></h4>"
+            str += " <p style='padding:0 0 10px 0'>" + data[i]["heading"] + "</p >"
+            str += " <span class='post-date'>" + data[i]["date"] + "</span>"
+            str += "<span class='glyphicon glyphicon-education' style='color: #5bc0de;padding-left:20px'>" + data[i]["num"] + "</span></div></div></div></div>"
+            articleContent += str;
+        }
+        $(".content").html(articleContent)
+     }
+
+     function btnContent(index,maxPage) {
+          str="<ul class='pagination'>"
+         for (var j = 1; j < maxPage+1; j++) {
+            if (j === index){
+                str+="<li class='active'><a href='client/index/?index="+j+"'>"+j +"<span class='sr-only'>(current)</span></a></li>"
+            } else {
+              str+="  <li><a href='client/index/?index="+j+"'>"+j+"</a></li>"
+            }
+         }
+            str+="</ul>"
+            $(".btnContent").html(str)
+
+     }
 
 
 

@@ -25,10 +25,43 @@
             </div>
         </div>
         <div class="row">
-           <div class="col-md-2">
-               <button type="button" class="btn btn-primary article-manage-btn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加文章</button>
-               <hr/>
-           </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary article-manage-btn"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加文章</button>
+                <hr/>
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <label class="sr-only">Amount (in dollars)</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">栏目</div>
+                        <select name="menuId" class="form-control">
+                            <option
+                                    {% if menuId == -1 %}
+                                        selected
+                                    {% endif %}
+                                    value="-1">全部分类</option>
+                            {% for item in menuList %}
+                                <option
+                                        {% if menuId == item.menuId %}
+                                            selected
+                                        {% endif %}
+                                        value="{{ item.menuId }}">{{ item.menuName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="row">
+                    <div class="col-xs-9 clearPadding">
+                        <input type="text" class="form-control" name="heading" placeholder="请输入标题" value="{{ heading }}">
+                    </div>
+                    <div class="col-xs-3 ">
+                        <a id="search" href="#" class="btn btn-primary"><span style="color: white" class="glyphicon glyphicon-search"></span></a>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div class="row">
             <div class="col-md-12 menuList">
@@ -79,7 +112,6 @@
                                 {% for item in positionList %}
                                     <option value="{{ item.positionId }}">{{ item.name }}</option>
                                 {% endfor %}
-
                             </select>
                         </div>
                         <button class="btn btn-primary"><span class="glyphicon glyphicon-arrow-up"></span> 推送</button>
@@ -87,32 +119,36 @@
              </form>
             </div>
 
-        </div>
-
         <div class="row">
             <center>
                 <ul class="pagination">
-                    {% if current == 1%}
-                        <li class="disabled" id="previous"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                        {% else %}
-                        <li><a href="/server/articleList/?page={{ previous }}" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                    {% endif %}
-                    {% for item in pages %}
-                        {% if item == 1 %}
-                            <li class="active"><a href="/server/articleList/?page={{ item }}">1 <span class="sr-only">(current)</span></a></li>
-                            {% else %}
-                            <li><a href="/server/articleList/?page={{ item }}">{{ item }} <span class="sr-only"></span></a></li>
-                        {% endif %}
+                    {# 上一页#}
+                    <li
+                            {% if current == 1%}
+                                class="disabled"
+                            {% endif %}
+                     id="previous"><a
+                            {% if current != 1 %}
+                                href="/server/articleList/?page={{ current|add:-1}}&menuId={{ menuId }}&heading={{ heading }}"
+                            {% endif %}
+                                aria-label="Previous"><span aria-hidden="true">«</span></a>
+                    </li>
+                    {#中间按钮页#}
+                    {% for item in pageList %}
+                        <li
+                                {% if item == current %}
+                                    class="active"
+                                {% endif %}><a href="/server/articleList/?page={{ item }}&menuId={{ menuId }}&heading={{ heading }}">{{ item }}</a></li>
                     {% endfor %}
-                    {% if next <= pageNum %}
-                        <li id="next"><a href="/server/articleList/?page={{ next }}" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                        {% else %}
-                        <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-
-                    {% endif %}
+                    {#下一页按钮#}
+                    <li{% if current == pageNum %} class="disabled" {% endif %}><a
+                        {% if current != pageNum %}
+                            href="/server/articleList/?page={{ current|add:1 }}&menuId={{ menuId }}&heading={{ heading }}"
+                        {% endif %}
+                        aria-label="Next"><span aria-hidden="true">»</span></a>
+                    </li>
                  </ul>
             </center>
-
         </div>
         {#  提示模态框 #}
         <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
@@ -147,9 +183,9 @@
         var returnStatus;
         {#分页模块#}
         var pagination;
+        var search;
         function init() {
             pagination=$(".pagination");
-            switchBlock();
             positionForm=$(".positionForm");
             positionForm.validate({
                 submitHandler:function(form){
@@ -163,6 +199,8 @@
             modalPanel=$("#modalHint");
             tips=modalPanel.find(".tips");
             manageBtn=$(".article-manage-btn");
+            search=$("#search");
+            search.click(startSearch);
             manageBtn.on("click",gotoManage);
         }
         init();
@@ -195,18 +233,11 @@
                 }
             })
         }
-        function switchBlock(){
-            {#初始状态下page是没有的#}
-            var page;
-            var li=pagination.find("li");
-            if(location["search"].split("?").length===1){
-            {#获取分页页数块下的li标签#}
-                page=1;
-            }else{
-                page=location["search"].split("?")[1].split("=")[1];
-            }
-            li.removeClass("active");
-            li.eq(Number(page)).attr("class","active")
+        function startSearch(){
+            var menuId=$("[name='menuId']").val();
+            var heading=$("[name='heading']").val();
+            location.href="/server/articleList/?page=1&menuId="+menuId+"&heading="+heading;
+
         }
     {% endblock %}
 </script>

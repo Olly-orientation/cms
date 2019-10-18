@@ -1,10 +1,17 @@
 {% for item in rightAdImglist %}
 <div class="row" style="position: relative;">
-    <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px">
+    <center>
+        <img  src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px;width: 100%">
+    </center>
     <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width:97%;overflow: hidden;position: absolute;bottom: 13%;left: 1.5%">{{ item.heading }}</p>
 </div>
 {% endfor %}
+<script type="text/javascript">
+    init();
+    function init(){
 
+    }
+</script>
 
 
 

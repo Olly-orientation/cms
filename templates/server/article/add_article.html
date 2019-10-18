@@ -69,11 +69,11 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标题颜色</label>
                             <div class="col-sm-10">
+
                                 <select class="form-control" name="headingColor" id="headingColor">
-                                    <option value="#000000">选择颜色（不选则为黑色）</option>
-                                    <option value="#FF0000">红色</option>
-                                    <option value="#00FF00">绿色</option>
-                                    <option value="#0000FF">蓝色</option>
+                                    {% for item in color %}
+                                        <option value="{{ item.color }}">{{ item.colorName }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -148,10 +148,8 @@
                     </div>
                 </div>
             </div>
+
         </div>
-    {% autoescape off %}
-        {{ initialContent }}
-    {% endautoescape %}
     </div>
 {% endblock %}
 <script type="text/javascript">
@@ -161,9 +159,8 @@
         var modalPanel;
         var tips;
         var returnStatus;
-        var id_content;
-        var initialContent;
         function init() {
+            $("#id_content").val('{{ articleInfo.contents|safe }}');
             modalPanel=$("#modalHint");
             tips=modalPanel.find(".tips");
             articleForm=$(".addArticle");
@@ -236,25 +233,6 @@
             if(selectedSourceIndex!==-1){
                 sourceGroup.eq(selectedSourceIndex).prop("selected",true)
             }
-            //判断ueditor 编辑器是否创建成功
-            $(function(){
-                if ("{{ id }}"){
-                    id_content.addListener("ready",setInitialContent);
-                }
-            });
-        }
-        function setInitialContent(){
-            $.ajax({
-                type:"get",
-                url:"/server/sendInitialContent/",
-                data:{
-                    "articleId":"{{ id }}"
-                },
-                dataType:"json",
-                success:function (data) {
-                    id_content.setContent(data)
-                }
-            });
         }
         function changeFileName(){
             $("#fileinp").change(function () {

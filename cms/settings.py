@@ -29,7 +29,7 @@ SECRET_KEY = 's=l8od#7y&%mq2zt6&it8c%r5$ed)rcj2@=dvo!an5f2i_lp_o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'server.sessionCheck.sessioncheck'
 ]
 
 ROOT_URLCONF = 'cms.urls'
@@ -94,6 +95,13 @@ DATABASES = {
         }
     },
 }
+COLOR_LIST=[
+    {"colorName": "默认(黑色)", "color": "#000000"},
+    {"colorName":"红色","color":"#FF0000"},
+    {"colorName":"绿色","color":"#00FF00"},
+    {"colorName":"蓝色","color":"#0000FF"}
+]
+
 
 
 # Password validation
@@ -136,3 +144,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS=(
     os.path.join(BASE_DIR,"static"),
 )
+UPLOAD_FILES={
+    "unit":"kb",
+    "maxSize":1000,
+    "types":["jpg","jpeg", "png"]
+}

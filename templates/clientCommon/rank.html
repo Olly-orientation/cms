@@ -1,0 +1,67 @@
+{#排行#}
+<table class="table rankTable">
+    <thead>
+        <tr>
+            <th colspan="2" scope="row" class="text-center">
+                <h4 style="margin: 0">文章排行</h4>
+                <span style="color: darkgrey">TOP ARTICLES</span>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+      {% for item in articleTopFive %}
+      <tr>
+          <td class="rank"></td>
+          <td class="title" style="text-align: left"><a href="/client/detail/?type={{ item.menuId}}&id={{ item.articleId }}">{{ item.heading }}</a></td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+<script type="text/javascript">
+    var rank;
+    var title;
+    var rankTable;
+    var rankStyleList;
+    init();
+    function init(){
+        rank=$(".rank");
+        title=$(".title");
+        rankTable=$(".rankTable");
+        rankStyleList=[
+            {
+                rankNo:"1",
+                titleStyle:"font-size:24px",
+                rankstyle:"display:inline-block;width: 20px;background: #ff0000;color: #fff"},
+            {
+                rankNo:"2",
+                titleStyle: "font-size:22px",
+                rankStyle:"display:inline-block;width: 20px;color: #ff0000;font-size: 20px"
+            },
+            {
+                rankNo:"3",
+                titleStyle:"font-size:20px",
+                rankStyle: "display:inline-block;width: 20px;color: #ff0000;font-size: 20px"
+            },
+            {
+                rankNo:"4",
+                titleStyle:"font-size:17px",
+                rankStyle:"display:inline-block;width: 20px;font-size: 20px"
+            },
+            {
+                rankNo:"5",
+                titleStyle:"font-size:17px",
+                rankStyle:"display:inline-block;width: 20px;font-size: 20px"
+            }
+        ];
+        changeStyle();
+    }
+    function changeStyle(){
+        for (var i=0;i<rank.length;i++){
+            rank.eq(i).attr("style",rankStyleList[i]["rankStyle"]);
+            rank.eq(i).html(rankStyleList[i]["rankNo"]);
+            title.eq(i).attr("style",rankStyleList[i]["titleStyle"])
+        }
+        rank.eq(0).attr("style","display:inline-block;background: #ff0000;color: #fff;font-size:24px;font-weight:bold");
+    }
+</script>

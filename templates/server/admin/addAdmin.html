@@ -1,7 +1,4 @@
-{% extends "common/commonForServer.html" %}
-{% block title %}
-<title>添加管理员</title>
-{% endblock %}
+{%  extends "common/commonForServer.html" %}
 {% block sources %}
     <link rel="stylesheet" href="/static/css/common.css">
     <script src="/static/js/jquery.form.js"></script>
@@ -20,7 +17,7 @@
             <div class="row" style="margin-left: 0;">
                 <div class="col-md-12">
                 {# form表单#}
-                    <form class="form-horizontal addAdmin" method="post" action="http://127.0.0.1:8000/server/addAdminHandle/?id={{ id }}" enctype="multipart/form-data">
+                    <form class="form-horizontal addAdmin" method="post" action="/server/addAdminHandle/" enctype="multipart/form-data">
                        {% csrf_token %}
                         <div class="form-group">
                             <label for="inputEmail3" class="col-sm-1 control-label">用户名</label>
@@ -29,12 +26,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-1 control-label" >头像</label>
-                            <div class="col-xs-5">
-                              <input type="file"  name="headimg" style="height: 30px;line-height: 30px">
-                            </div>
-                            <div class="col-xs-3">
-                                <img class="preview " style="width: 30px;height: 30px;" />
+                            <label class="col-sm-1 control-label">请上传图片</label>
+                            <div class="col-sm-10" style="position: relative">
+                                <label for="fileinp" >
+                                    <img class="browse"  src="/static/img/serverImg/uploadsFile.png" alt="" style="width: 95px;height: 95px;position: absolute;">
+                                    <input type="file" id="fileinp" name="headImg" style="width: 95px;height: 95px;opacity: 0" >
+                                </label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -74,23 +71,53 @@
             </div>
         </div>
 
+     {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="msg"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{% endblock %}
+
+
+    </div>
 <script type="text/javascript">
-    {% block js %}
-        var form;
-        function init() {
-            var str=location.href
-            showImg()
+var form;
+init();
+function init() {
+    var str=location.href
+    addLogo()
+}
+function addLogo(){
+    $("input[name='headImg']").change(function(){
+        var imgFile=this.files.item(0);
+        console.log(imgFile.name.split(".")[1])
+        imgList=["jpg","jpeg", "png"]
+        if (imgList.indexOf(imgFile.name.split(".")[1])>-1) {
+            var _url = window.URL.createObjectURL(imgFile)
+            console.log(_url)
+            $(".browse").attr("src", _url);
+            $(".browse").css("z-index", 100000);
+        }else {
+            $(".browse").attr("src", "/static/img/serverImg/uploadsFile.png");
+            $(".browse").css("z-index", 100000000);
+            alert("当前文件类型不符合条件")
         }
-        init();
-        function  showImg() {
-            $("input[name='headimg']").change(function(){
-            var imgFile=this.files.item(0);
-            var _url=window.URL.createObjectURL(imgFile);
-            $(".preview").attr("src",_url);
-        })
-     ajax()
+    });
+    ajax()
 }
 function ajax() {
     form=$(".addAdmin");
@@ -109,7 +136,7 @@ function ajax() {
             email:{
                 required:true,
             },
-            headimg:{
+            headImg:{
                 required:true,
             },
             content:{
@@ -117,22 +144,26 @@ function ajax() {
             }
         },
         submitHandler:function(form){
-            console.log("表单验证成功不提交");
             $(".addAdmin").ajaxSubmit(function(data){
-                console.log("数据返回成功")
-                data=JSON.parse(data)
-                alert(data["tips"])
-                if (data["status"] == 0){
-                    location.href="http://127.0.0.1:8000/server/adminList/"
-                }
-
+                data=JSON.parse(data);
+                showModal(data["status"],data["tips"])
             });
         }
     })
 }
+ function showModal(code,msg){
+        $(".msg").html(msg);
+         $("#modalHint").modal("show");
+         $("#modalHint").on('hidden.bs.modal', function (e) {
+             {#隐藏成功之后调用的函数#}
+             if (code === 0) {
+                 location.href="/server/adminList/"
+             }
+         })
 
+    }
 
-
-
-    {% endblock %}
 </script>
+
+    
+{% endblock %}

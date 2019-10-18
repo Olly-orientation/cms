@@ -1,13 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect
 from server import models
 from django.forms import forms
 from DjangoUeditor.forms import  UEditorField
 from datetime import datetime
 from django.db.models import Max
+from cms import settings
+import os
 import math
 import json
+import re
 # Create your views here.
 class TestUEditorForm(forms.Form):
     content = UEditorField('', width=900, height=300, toolbars="full", imagePath="static/images/",
@@ -22,7 +24,8 @@ def login(request):
     :param request:
     :return:
     '''
-    return render(request,"server/login.html")
+    return render(request, "server/serverIndex/login.html")
+
 def loginCheck(request):
     '''
     登录检查函数
@@ -51,7 +54,9 @@ def index(request):
     :return:
     '''
     admin=request.session.get("admin")
-    context={}
+    context={
+        "navIndex":0
+    }
     if not admin:
         context={
             "logined":False
@@ -64,7 +69,8 @@ def index(request):
         context["mostArticle"]=searchMaxArticle()
         context["positionCount"]=countPosition()
 
-    return render(request,"server/serverIndex.html",context)
+
+    return render(request, "server/serverIndex/serverIndex.html", context)
 
 
 def clearAdminInfo(request):
@@ -116,9 +122,10 @@ def menu(request):
     '''
     context={
         "menuList":models.menu.objects.values(),
-        "admin":showAdmin(request)
+        "admin":showAdmin(request),
+        "navIndex":1
     }
-    return render(request,"server/menu.html",context)
+    return render(request, "server/menu/menu.html", context)
 def addmenu(request):
     '''
     渲染添加菜单页面
@@ -128,14 +135,17 @@ def addmenu(request):
     id=request.GET.get("id")
     admin = request.session.get("admin")
     context={
-        "admin":admin
+        "admin":admin,
+        "navIndex": 1
     }
     if id:
         context["menuInfo"]=models.menu.objects.filter(menuId=id).get()
         context["edit"]="true"
         context["id"]=id
 
-    return render(request,"server/add_menu.html",context)
+    return render(request, "server/menu/add_menu.html", context)
+
+
 def savemenu(request):
     '''
     将修改好的或者新增的菜单放入数据库中
@@ -155,6 +165,8 @@ def savemenu(request):
             return HttpResponse(returnData(0,"添加成功"),content_type="application/json; charset=utf-8")
         except Exception as e:
             return HttpResponse(returnData(1,"添加失败"),content_type="application/json; charset=utf-8")
+
+
 def delMenu(request):
     '''
     删除菜单的方法
@@ -164,6 +176,7 @@ def delMenu(request):
     menuId=request.GET.get("menuId")
     try:
         models.menu.objects.get(menuId=menuId).delete()
+        models.article.objects.filter(menuId=menuId).delete()
     except Exception as e:
         return HttpResponse(returnData(1,"删除失败"),content_type="application/json; charset=utf-8")
     return HttpResponse(returnData(0,"删除成功"),content_type="application/json; charset=utf-8")
@@ -179,19 +192,20 @@ def articleList(request):
     page=request.GET.get("page")
     if not page:
         page=1
-    articleInfo=switch(5,page)
+    articleInfo=switch(request,5,int(page))
     articleResult=articleInfo["articleResult"]
     context={
         "articleList":articleResult,
         "positionList":showPosition(),
         "admin":admin,
-        "pages":articleInfo["pageNum"],
-        "pageNum":len(articleInfo["pageNum"]),
+        "pageList":articleInfo["pageList"],
         "current":articleInfo["currentPage"],
-        "previous":articleInfo["previousPage"],
-        "next":articleInfo["nextPage"]
+        "menuList":articleInfo["menuList"],
+        "heading":articleInfo["heading"],
+        "menuId":int(articleInfo["menuId"]),
+        "navIndex": 2
     }
-    return render(request,"server/articleList.html",context)
+    return render(request, "server/article/articleList.html", context)
 
 
 def countPage(perPage,items):
@@ -200,6 +214,8 @@ def countPage(perPage,items):
     :param perPage: 每页要显示的个数
     :param items: 一共有多少字段
     :return:
+
+
     '''
     # 获取字段的数量
     # 设定好一页显示多少条消息
@@ -211,38 +227,107 @@ def countPage(perPage,items):
     }
     return dic
 
-def switch(perPage,page):
+def switch(request,perPage,page,panelItem=3):
     '''
     为文章打造的分页显示方法
     :param perPage: 每一页要显示的数量
     :param page: 传入的页码数
     :return:
     '''
-    # 获取页数
-    page = int(page)
-    start = perPage * (page - 1)
-    endDouble = perPage * page
-    articleCount=models.article.objects.count()
 
+    menuId=-1
+    heading=''
+    if request.GET.get("heading"):
+        heading=request.GET.get("heading")
+    if request.GET.get("menuId"):
+        menuId=int(request.GET.get("menuId"))
     # 按需查找
-    articleResult = models.article.objects.values().order_by("-modifydate")[start:endDouble]
-    sourceResult = models.source.objects.values()
-    menuResult = models.menu.objects.values()
+    search=searchForDemand(page,perPage,heading,menuId)
+    articleResult=search["articleResult"]
+    articleCount=search["articleCount"]
+    sourceResult=search["sourceResult"]
+    menuResult=search["menuResult"]
     for item in articleResult:
-        for item1 in sourceResult:
-            if item["sourceId"] == item1["sourceId"]:
-                item["sourceName"] = item1["sourceName"]
-        for item2 in menuResult:
-            if item["menuId"] == item2["menuId"]:
-                item["menuName"] = item2["menuName"]
+        itemSourceId=item["sourceId"]
+        itemMenuId=item["menuId"]
+        def filterSource(items):
+            return itemSourceId==items["sourceId"]
+        def filterMenu(items):
+            return itemMenuId==items["menuId"]
+        filterSourceList = list(filter(filterSource, sourceResult))
+        filterMenuList=list(filter(filterMenu, menuResult))
+        item["sourceName"]=filterSourceList[0]["sourceName"]
+        item["menuName"]=filterMenuList[0]["menuName"]
     dic={
         "articleResult":articleResult,
-        "pageNum":countPage(perPage,articleCount)["pageNum"],
+        "pageList":arrangePagination(page,articleCount,perPage,panelItem),
         "currentPage":page,
-        "previousPage":page-1,
-        "nextPage":page+1
+        "menuList":menuResult,
+        "heading":heading,
+        "menuId":menuId,
+        "panelItem":panelItem
     }
     return dic
+def searchForDemand(page,perPage,heading,menuId):
+    # 获取页数
+    start = perPage * (page - 1)
+    endDouble = perPage * page
+    # 按需查找
+    if menuId == -1:
+        articleResult = models.article.objects.filter(heading__contains=heading).values().order_by("-modifydate")[
+                        start:endDouble]
+        articleCount = models.article.objects.filter(heading__contains=heading).count()
+    else:
+        articleResult = models.article.objects.filter(menuId=menuId, heading__contains=heading).values().order_by(
+            "-modifydate")[start:endDouble]
+        articleCount = models.article.objects.filter(menuId=menuId, heading__contains=heading).count()
+    sourceResult = models.source.objects.values()
+    menuResult = models.menu.objects.values()
+    dic={
+        "articleResult":articleResult,
+        "articleCount":articleCount,
+        "sourceResult":sourceResult,
+        "menuResult":menuResult
+    }
+
+    return dic
+def arrangePagination(page,articleCount,perPage,panelItem):
+    '''
+    渲染前端需要使用的列表
+    :param page:
+    :param articleCount:
+    :param perPage:
+    :param panelItem:
+    :return:
+    '''
+    # 需要获取三个变量
+    # 1.当前页数page
+    # 2.分页器要求在前端显示的个数panelItem
+    # 3.总页数 allPages
+    # 需要什么变量进行接收？
+    # pageList
+    pageList = []
+    allPages = math.ceil(articleCount / perPage)
+    if page == 1:
+        for i in range(1, panelItem + 1):
+            pageList.append(i)
+        pageList = filter(lambda x: x <= allPages, pageList)
+    else:
+        leftover = (panelItem) % 2
+        average = (panelItem - 1) / 2
+        if leftover == 0:
+            # 均分
+            left, right = ((page - 1) - math.floor(average), page + math.ceil(average))
+        else:
+            average = int(average)
+            left, right = ((page) - average, page + average)
+        # 左右进行加减
+        for i in range(left, page):
+            pageList.append(i)
+        for i in range(page, right + 1):
+            pageList.append(i)
+        pageList = list(filter(lambda x: x <= allPages and x >= 1, pageList))
+    return pageList
 
 def showPosition():
     '''
@@ -289,7 +374,8 @@ def addArticle(request):
     context={
         "editor":editor,
         "admin": admin,
-        "adminId":models.admin.objects.get(adminname=admin).adminId
+        "adminId":models.admin.objects.get(adminname=admin).adminId,
+        "navIndex": 2
     }
     #搜索所有的source和menu记录
     sourceResult = models.source.objects.values()
@@ -297,6 +383,8 @@ def addArticle(request):
     if id:
         #若存在id，则表示文章是要进行编辑修改的，那么将和该文章相关的信息全部搜索到
         articleResult = models.article.objects.filter(articleId=id).values().get()
+        articleContents=models.articlecontent.objects.filter(articleId=id).values().get()
+        articleResult.update(articleContents)
         selectedSource=models.source.objects.filter(sourceId=articleResult["sourceId"]).values().get()
         selectedMenu=models.menu.objects.filter(menuId=articleResult["menuId"]).values().get()
         context["selectedSource"]=selectedSource
@@ -304,9 +392,11 @@ def addArticle(request):
         context["articleInfo"]=articleResult
         context["edit"]="true"
         context["id"]=id
+
     context["sourceResult"]=sourceResult
     context["menuResult"]=menuResult
-    return render(request,"server/add_article.html",context)
+    context["color"]=settings.COLOR_LIST
+    return render(request, "server/article/add_article.html", context)
 
 def sendInitialContent(request):
     '''
@@ -412,95 +502,112 @@ def getsize(size, format = 'kb'):
     return "%0.2f"%size
 
 def adminList(request):
-    getServerData = models.admin.objects.all()
-    returnList=[]
-    for item in getServerData:
-        dic={
-            "id":item.adminId,
-            "name": item.adminname,
-            "pwd": item.password,
-            "email": item.email,
-            "logintime":item.loginTime.strftime("%y-%m-%d %H:%M:%S"),
-            "headImg": item.headImg,
-        }
-        returnList.append(dic)
-
-    context={
-        "list":returnList,
-        "admin":showAdmin(request)
-    }
-    return render(request,"server/adminList.html",context)
+    adminList=models.admin.objects.all()
+    admin = showAdmin(request)
+    return render(request, "server/admin/adminList.html",{"adminList":adminList,"admin":admin,"navIndex":3})
 def delAdmin(request):
     id=request.GET.get("id")
     try:
         models.admin.objects.filter(adminId=id).delete()
+        return HttpResponse(returnData(0, "删除管理员成功"))
     except Exception as e:
-        return HttpResponse(returnData(1, "删除失败"))
-
-    return HttpResponse(returnData(0,"删除成功"))
-def changeAdmin(request):
-    id = request.GET.get("id")
-    getAdminList = models.admin.objects.values("adminname", "headImg", "password", "email").get(adminId=id)
+        return HttpResponse(returnData(1, "删除管理员失败"))
+def editAdmin(request):
+    adminId =request.GET.get("id")
+    adminInfoList=models.admin.objects.values("adminId","adminname","password","email","headImg","introduction").get(adminId=adminId)
     context = {
         "intro": TestUEditorForm(),
-        "id": id,
-        "getAdminList": getAdminList
-    }
-    return render(request, "server/changeAdmin.html", context)
-
-
-def addAdmin(request):
-    id=request.GET.get("id")
-    context = {
-        "intro": TestUEditorForm(),
-        "id":id,
+        "adminInfoList":adminInfoList,
+        "navIndex":3,
         "admin":showAdmin(request)
     }
-    return render(request, "server/add_admin.html", context)
-def changeAdminHandle(request):
-    id = request.GET.get("id")
-    name = request.POST.get("username")
-    pwd = request.POST.get("pwd")
-    email = request.POST.get("email")
-    content = request.POST.get("content")
-    headImg = request.FILES.get("headimg")
-    if headImg.name.split(".")[-1] not in ["jpg", "jpeg", "png"]:
-        print("文件类型不正确")
-        return HttpResponse(returnData(1, "文件类型不正确"))
-    filename = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
-    savePath = "static/img/clientImg/" + filename
-    with open(savePath, 'wb') as f:
-        for file in headImg.chunks():
-            f.write(file)
-            f.flush()
-    models.admin.objects.filter(adminId=id).update(adminname=name, password=pwd, email=email, introduction=content,loginTime=datetime.now(), headImg=savePath)
-    return HttpResponse(returnData(0, "修改成功"))
-
+    return render(request,"server/admin/editAdmin.html",context)
+def editAdminHandle(request):
+    adminId=request.POST.get("adminId")
+    adminname=request.POST.get("username")
+    content=request.POST.get("content")
+    pwd=request.POST.get("pwd")
+    email=request.POST.get("email")
+    headImg = request.FILES.get("headImg")
+    beforeheadImg=request.POST.get("beforeheadImg")
+    if headImg:
+        # 此时重新上传缩略图了
+        # 先判断文件类型
+        if headImg.name.split(".")[1] not in settings.UPLOAD_FILES["types"]:
+            print("此时文件类型不正确")
+            return HttpResponse(returnData(1, "文件类型不正确"))
+        fileName = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
+        print("新生成的文件名", fileName)
+        print(headImg.size)
+        size = HttpResponse(headImg.size, settings.UPLOAD_FILES["unit"])
+        print(size)
+        if float(size) > settings.UPLOAD_FILES["maxSize"]:
+            return HttpResponse(returnData(1, "此时文件过大"))
+        # 判断文件夹是否存在
+        dir = "static/img/clientImg/"
+        jugeDir(dir)
+        savePath = dir + fileName
+        with open(savePath, 'wb') as f:
+            for file in headImg.chunks():
+                f.write(file)
+                f.flush()
+        if beforeheadImg:
+            path = 'static/img/clientImg/' + beforeheadImg
+            newPath = os.path.join(settings.BASE_DIR, path)
+            print("删除图片的路径", newPath)
+            os.remove(newPath)
+        try:
+            models.admin.objects.filter(adminId=adminId).update(adminname=adminname,password=pwd,headImg=fileName,introduction=content,email=email,loginTime=datetime.now())
+            return HttpResponse(returnData(0, "编辑用户信息成功"))
+        except Exception as e:
+            return HttpResponse(returnData(1, "编辑用户信息失败"))
+    else:
+        # 此时没有重新上传缩略图
+        try:
+            models.admin.objects.filter(adminId=adminId).update(adminname=adminname, password=pwd, introduction=content,email=email, loginTime=datetime.now())
+            return HttpResponse(returnData(0, "编辑用户信息成功"))
+        except Exception as e:
+            return HttpResponse(returnData(1, "编辑用户信息失败"))
+def addAdmin(request):
+    context = {
+        "intro": TestUEditorForm(),
+        "admin":showAdmin(request),
+        "navIndex":3
+    }
+    return render(request, "server/admin/addAdmin.html",context)
 def addAdminHandle(request):
-    name = request.POST.get("username")
+    headImg = request.FILES.get("headImg")
+    username = request.POST.get("username")
     pwd = request.POST.get("pwd")
-    email = request.POST.get("email")
+    email=request.POST.get("email")
     content = request.POST.get("content")
-    headImg = request.FILES.get("headimg")
-    if headImg.name.split(".")[-1] not in ["jpg", "jpeg", "png"]:
-        print("文件类型不正确")
-        return HttpResponse(returnData(1, "文件类型不正确"))
-    filename = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
-    savePath = "static/img/clientImg/" + filename
-    with open(savePath, 'wb') as f:
-        for file in headImg.chunks():
-            f.write(file)
-            f.flush()
-    getServerData = models.admin.objects.filter(adminname = name ).all()
+    # 先判断文件类型
+    fileName=""
+    if headImg:
+        if headImg.name.split(".")[1] not in settings.UPLOAD_FILES["types"]:
+            print("此时文件类型不正确")
+            return HttpResponse(returnData(1, "文件类型不正确"))
+        fileName = "headImg_" + str(int(datetime.now().timestamp() * 1000000)) + "." + headImg.name.split(".")[-1]
+        size = getsize(headImg.size, settings.UPLOAD_FILES["unit"])
+        if float(size) > settings.UPLOAD_FILES["maxSize"]:
+            return HttpResponse(returnData(1, "此时文件过大"))
+        # 判断文件夹是否存在
+        dir = "static/img/clientImg/"
+        HttpResponse(dir)
+        savePath = dir + fileName
+        with open(savePath, 'wb') as f:
+            for file in headImg.chunks():
+                f.write(file)
+                f.flush()
+    getServerData = models.admin.objects.filter(adminname=username).all()
     if len(getServerData) == 0:
-        print("当前用户不存在")
-        newAdmin = models.admin(adminname=name, password=pwd, email=email,introduction=content,loginTime=datetime.now(),headImg=savePath)
+        newAdmin= models.admin(adminname=username, headImg=fileName, loginTime=datetime.now(), password=pwd,email=email,introduction=content)
         newAdmin.save()
-        return HttpResponse(returnData(0, "注册成功"))
-    # except Exception as e:
-    #     return HttpResponse(returnData(1,"注册失败"))
+        return HttpResponse(returnData(0, "添加管理员成功"))
+    else:
+        return HttpResponse(returnData(1, "添加管理员失败"))
 
-    return HttpResponse(returnData(1,"注册失败,当前用户名已存在"))
+
 
 
 def positionList(request):
@@ -511,9 +618,10 @@ def positionList(request):
     '''
     context = {
         "positionList": models.position.objects.values(),
-        "admin": showAdmin(request)
+        "admin": showAdmin(request),
+        "navIndex": 4
     }
-    return render(request,"server/positionList.html",context)
+    return render(request, "server/position/positionList.html", context)
 def addPosition(request):
     '''
     添加推荐位
@@ -522,13 +630,14 @@ def addPosition(request):
     '''
     id=request.GET.get("id")
     context={
-        "admin":showAdmin(request)
+        "admin":showAdmin(request),
+        "navIndex": 4
     }
     if id:
         context["positionInfo"]=models.position.objects.filter(positionId=id).get()
         context["edit"]="true"
         context["id"]=id
-    return render(request,"server/add_position.html",context)
+    return render(request, "server/position/add_position.html", context)
 def savePosition(request):
     '''
     修改/添加推荐位
@@ -571,8 +680,19 @@ def showAdmin(_request):
     :return:
     '''
     admin=_request.session.get("admin")
-    print("------------",admin)
     return admin
+def jugeDir(dir):
+    list=dir.split("/")
+    print(list)
+    for index,name in enumerate(list,0):
+        imgPath=os.path.join(os.getcwd(),name)
+        print(imgPath)
+        if not os.path.exists(imgPath):
+            print("此时文件夹不存在就新建")
+            os.mkdir(imgPath)
+        if index <len(list)-1:
+            print("此时文件夹存在")
+            list[index+1]=name+"/"+list[index+1]
 
 
 # 推荐位内容管理部分方法
@@ -595,9 +715,10 @@ def positionContentList(request):
         "pageNum": len(positionContentInfo["pageNum"]),
         "current": positionContentInfo["currentPage"],
         "previous": positionContentInfo["previousPage"],
-        "next": positionContentInfo["nextPage"]
+        "next": positionContentInfo["nextPage"],
+        "navIndex": 5
     }
-    return render(request, "server/positionContentList.html",context)
+    return render(request, "server/position/positionContentList.html", context)
 
 def positionContentSwitch(perPage,page):
     '''
@@ -650,6 +771,45 @@ def delPositionContent(request):
     except Exception as e:
         return HttpResponse(returnData(1, "删除失败"), content_type="application/json; charset=utf-8")
     return HttpResponse(returnData(0, "删除成功"), content_type="application/json; charset=utf-8")
+def clearUnusedImages(request):
+    '''
+    先获取所有数据库中和图片相关的文件
+    :param request:
+    :return:
+    '''
+    dbList=[]
+    # 获取文章的缩略图文件名
+    imagesarticle=models.article.objects.values("thumb")
+    # 获取文章内容中文章编辑的图片地址
+    imagesarticleContents=models.articlecontent.objects.values("contents")
+    staticImagesList=os.listdir("static/images")
+    contentsImagesList=[]
+    imagesadmin = models.admin.objects.values("headImg")
+    reg = '<img.*?src="(.*?\.(jpg|png|jpeg|bmp))".*?/>'
+    try:
+        for item in imagesarticleContents:
+            # 判断文章中有没有图片
+            if re.search(reg, item["contents"]):
+                articleImg=re.findall(reg,item["contents"])
+                for item in articleImg:
+                    # 获取图片文件名称
+                    contentImg=item[0].split("/")[-1]
+                    contentsImagesList.append(contentImg)
+        # 清除文章中多余的图片
+        for item in staticImagesList:
+            if item not in contentsImagesList:
+                path1=os.path.join("static\\images",item)
+                os.remove(path1)
+    except Exception as e:
+        return HttpResponse(returnData(1,"失败"))
+    return HttpResponse(returnData(0,"删除成功"))
+def findDir(dir):
+    li=dir.split("/")
+    path=settings.BASE_DIR
+    for item in li:
+        os.path.join(path,item)
+        path=path+"\\"+item
+    return path
 def returnData(status_code,str_tips=""):
     info={}
     info["status"]=status_code

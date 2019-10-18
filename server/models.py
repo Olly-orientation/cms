@@ -52,6 +52,7 @@ class menu(models.Model):
     menuName---菜单名称
     menuStatus---菜单显示状态
     '''
+    print("menu")
     menuId=models.AutoField(primary_key=True)
     menuName=models.CharField(max_length=200)
     menuStatus=models.SmallIntegerField(default=0)

@@ -1,0 +1,172 @@
+{%  extends "common/commonForServer.html" %}
+{% block sources %}
+    <link rel="stylesheet" href="/static/css/common.css">
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/jquery.validate.js"></script>
+{% endblock %}
+{% block right %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-12 col-lg-12">
+                    <p class="location"><a class="text-primary" href="http://127.0.0.1:8000/server/adminList/">用户管理</a> / 添加管理员</p>
+                </div>
+            </div>
+        </div>
+        <div class="container"  style="margin-left: 20px;padding-left: 0">
+            <div class="row" style="margin-left: 0;">
+                <div class="col-md-12">
+                {# form表单#}
+                    <form class="form-horizontal addAdmin" method="post" action="/server/editAdminHandle/" enctype="multipart/form-data">
+                       {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-1 control-label">用户名</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="username" value="{{ adminInfoList.adminname }}" placeholder="请输入用户名" style="width: 85%" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">请上传图片</label>
+                            <div class="col-sm-10" style="position: relative">
+                                <label for="fileinp" >
+                                    {% if adminInfoList.headImg  %}
+                                        <img class="browse"  src="/static/img/clientImg/{{ adminInfoList.headImg }}" alt="" style="width: 95px;height: 95px;position: absolute;">
+                                    {% else %}
+                                        <img class="browse"  src="/static/img/serverImg/uploadsFile.png" alt="" style="width: 95px;height: 95px;position: absolute;">
+                                    {% endif %}
+                                        <input type="file" id="fileinp" name="headImg" style="width: 95px;height: 95px;opacity: 0" >
+                                </label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="adminId" value="{{ adminInfoList.adminId  }}">
+                        <input type="hidden" name="beforeheadImg" value="{{ adminInfoList.headImg  }}">
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-1 control-label">密码</label>
+                            <div class="col-sm-10">
+                                 <input type="password" class="form-control " id="pwd" name="pwd" value="{{ adminInfoList.password }}" placeholder="请输入密码" style="width: 85%">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-1 control-label">重复密码</label>
+                            <div class="col-sm-10">
+                                 <input type="password" class="form-control" name="repwd" value="{{ adminInfoList.password }}" placeholder="请再次输入密码" style="width: 85%">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-1 control-label">邮箱</label>
+                            <div class="col-sm-10">
+                                 <input type="email" class="form-control" name="email" value="{{ adminInfoList.email }}" placeholder="请输入邮箱" style="width: 85%">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-1 control-label">简介</label>
+                            <div class="col-sm-10" style="width: 85%">
+                                {{ intro.media }}
+                                {{ intro }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-12" style="margin-left: 35%">
+                              <button type="submit" class="btn btn-primary">添加</button>
+                              <button type="reset" class="btn btn-default">重填</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+     {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="msg"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+<script type="text/javascript">
+var form;
+init();
+function init() {
+    document.getElementById("id_content").value='{{ adminInfoList.introduction |safe }}'
+    var str=location.href
+    addLogo()
+}
+function addLogo(){
+    $("input[name='headImg']").change(function(){
+        var imgFile=this.files.item(0);
+        imgList=["jpg","jpeg", "png"]
+        if (imgList.indexOf(imgFile.name.split(".")[1])>-1) {
+            var _url = window.URL.createObjectURL(imgFile)
+            console.log(_url)
+            $(".browse").attr("src", _url);
+            $(".browse").css("z-index", 100000);
+        }else {
+            $(".browse").attr("src", "/static/img/serverImg/uploadsFile.png");
+            $(".browse").css("z-index", 100000000);
+            alert("当前文件类型不符合条件")
+        }
+    });
+    ajax()
+}
+function ajax() {
+    form=$(".addAdmin");
+    form.validate({
+        rules:{
+            username:{
+                required:true,
+            },
+            pwd:{
+                required:true,
+            },
+            repwd:{
+                required:true,
+                equalTo:"#pwd"
+            },
+            email:{
+                required:true,
+            },
+            content:{
+                required:true,
+            }
+        },
+        submitHandler:function(form){
+            $(".addAdmin").ajaxSubmit(function(data){
+                data=JSON.parse(data);
+                showModal(data["status"],data["tips"])
+            });
+        }
+    })
+}
+ function showModal(code,msg){
+        $(".msg").html(msg);
+         $("#modalHint").modal("show");
+         $("#modalHint").on('hidden.bs.modal', function (e) {
+             {#隐藏成功之后调用的函数#}
+             if (code == 0) {
+                 location.href="/server/adminList/"
+             }
+         })
+
+    }
+
+</script>
+
+
+{% endblock %}

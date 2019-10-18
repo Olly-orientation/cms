@@ -1,166 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>路赞新闻</title>
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css"/>
-    <script src="/static/bootstrap-3.3.7-dist/js/jquery.js"></script>
-    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <style type="text/css">
-        .carousel-inner img{
-				width: 900px;
-				height: 300px;
-			}
-        .row    li{
-            list-style: none
-        }
-         a:link{
-            color: #000000;
-        }
-    </style>
-</head>
-<body>
-{#导航#}
-   <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header ">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" style="margin-left: 20px">路赞新闻网</a>
-        </div>
-                <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navContent">
-            <li><a href="http://127.0.0.1:8000/client/index/">首页 <span class="sr-only">(current)</span></a></li>
-              {% for item in type_list %}
-                    <li><a href="http://127.0.0.1:8000/client/type/?type={{ item.id }}">{{ item.name }}</a></li>
-              {% endfor %}
-          </ul>
+{% include "clientCommon/header.html" %}
 
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-   </nav>
 
 <div class="row" style="margin: 0">
-    <div class="col-xs-7 col-xs-offset-1 content">
-
-
-
-    </div>
-
-
+    <div class="col-xs-7 col-xs-offset-1 content"></div>
     <div class="col-xs-3" style="margin-left: 50px;">
-
+        {% include "clientCommon/rank.html" %}
     <div>
-  {#排行#}
-     <table class="table">
-      <thead>
-        <tr>
-          <th scope="row" class="text-center">
-              <h4 style="margin: 0">文章排行</h4>
-              <span style="color: darkgrey">TOP ARTICLES</span>
-           </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th >
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.oneArticle.type }}&id={{ rankDict.oneArticle.id }}">
-                <h3>
-                    <span class="text-center" style="display:inline-block;width: 20px;background: #ff0000;color: #fff;">{{ rankDict.oneArticle.rank }}</span>
-                     {{ rankDict.oneArticle.heading }}
-                </h3>
-                </a>
-          </th>
-        </tr>
 
-        <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.twoArticle.type }}&id={{ rankDict.twoArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.twoArticle.rank }}</span>
-                {{ rankDict.twoArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-        <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.threeArticle.type }}&id={{ rankDict.threeArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;color: #ff0000;font-size: 20px">{{ rankDict.threeArticle.rank }}</span>
-                {{ rankDict.threeArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-         <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fourArticle.type }}&id={{ rankDict.fourArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fourArticle.rank }}</span>
-                {{ rankDict.fourArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-         <tr>
-          <th>
-              <a href="http://127.0.0.1:8000/client/detail/?type={{ rankDict.fiveArticle.type }}&id={{ rankDict.fiveArticle.id }}">
-              <h5>
-                  <span style="display:inline-block;width: 20px;font-size: 20px">{{ rankDict.fiveArticle.rank }}</span>
-                {{ rankDict.fiveArticle.heading }}
-              </h5>
-              </a>
-          </th>
-        </tr>
-
-      </tbody>
-    </table>
     </div>
        <div>
-            {% for item in rightAdImglist %}
-            <div class="row" style="position: relative;">
-                <img src="/static/img/clientImg/{{ item.thumb }}" alt="My image" class="img-thumbnail" style="margin-top: 25px;margin-bottom: 40px">
-                <p class="text-center" style="background: rgba(0,0,0,0.5);color: #fff;width:97%;overflow: hidden;position: absolute;bottom: 13%;left: 1.5%">{{ item.heading }}</p>
-            </div>
-            {% endfor %}
+            {% include "clientCommon/rightAd.html" %}
        </div>
     </div>
-
-
 
 </div>
 
 <nav aria-label="#" class="text-center btnContent">
 
 </nav>
-
-
-
 </body>
 <script>
     var li;
     var type;
-    init()
+    init();
     function init(){
-        var str=location.href
+        var str=location.href;
             if (str.split("&")[1]) {
-              var  index=str.split("&")[1].split("=")[1]
+              var  index=str.split("&")[1].split("=")[1];
               type=str.split("&")[0].split("=")[1]
             }else {
                  type=str.split("=")[1]
             }
-        addActive()
+        addActive();
         if (index){
             ajax(index)
         }else {
@@ -169,8 +40,8 @@
 
     }
 function addActive() {
-        li=$(".navContent li")
-        var liLength=$(".navContent li").length
+        li=$(".navContent li");
+        var liLength=$(".navContent li").length;
     for (var i=0;i<liLength;i++){
             if (i == type) {
                 li.eq(i).addClass("active")
@@ -181,7 +52,7 @@ function ajax(index) {
  	  $.ajax({
 			type:"get",
 			dataType:"json",
-			url:"http://127.0.0.1:8000/client/typeList/",
+			url:"/client/typeList/",
             data:{
 			    type:type,
                 index:index,

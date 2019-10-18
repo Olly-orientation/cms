@@ -1,0 +1,109 @@
+{%  extends "common/commonForServer.html" %}
+{% block right %}
+<div class="container-fluid">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12 col-lg-12">
+                <p class="location"><a class="text-primary" href="http://127.0.0.1:8000/server/adminList/">用户管理</a> / 用户列表</p>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-md-2">
+               <a  href="/server/addAdmin/" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus" style="color: white"></span> 添加管理员</a>
+           </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-12 menuList">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">id</th>
+                      <th>账号</th>
+                      <th>密码</th>
+                      <th>邮箱</th>
+                      <th>登录时间</th>
+                      <th>头像</th>
+                      <th style="width: 13%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for item in adminList %}
+                    <tr style="height: 40px;">
+                      <td scope="row">{{ item.adminId }}</td>
+                        <td style="line-height: 40px"> {{ item.adminname }}</td>
+                        <td style="line-height: 40px"> {{ item.password }}</td>
+                        <td style="line-height: 40px"> {{ item.email }}</td>
+                        <td style="line-height: 40px">{{ item.loginTime |date:"Y-m-d H:i:s" }}</td>
+                        <td style="line-height: 40px">
+                           <img src="/static/img/clientImg/{{ item.headImg }}" alt="用户头像" style="height: 40px;width: 40px">
+                        </td>
+                        <td style="line-height: 40px">
+                          <a class="btn btn-primary change"  href="/server/editAdmin/?id={{ item.adminId }}"><span class="glyphicon glyphicon-edit"></span></a>
+                          <button class="btn btn-danger del" index="{{ item.adminId }}" ><span class="glyphicon glyphicon-trash"></span></button>
+                        </td>
+                      </tr>
+
+                  {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+     {#  提示模态框 #}
+        <div class="modal fade" id="modalHint" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <center class="msg"></center>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<script type="text/javascript">
+        var manageBtn;
+        init();
+        function init() {
+            $(".del").click(delFun)
+        }
+        function delFun() {
+            id=$(this).attr("index");
+            $.ajax({
+                type: "get",
+                data: {
+                    "id": id
+                },
+                dataType: "json",
+                url: "/server/delAdmin/",
+                success: function (data) {
+                    //处理接收过来的数据
+                    data=JSON.parse(data);
+                    showModal(data["status"],data["tips"])
+                }
+            })
+        }
+     function showModal(code,msg) {
+         $(".msg").html(msg);
+         $("#modalHint").modal("show");
+         $("#modalHint").on('hidden.bs.modal', function (e) {
+             {#隐藏成功之后调用的函数#}
+             if (code === 0) {
+                 location.href = "/server/adminList/"
+             }
+         })
+     }
+
+</script>
+{% endblock %}

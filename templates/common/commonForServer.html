@@ -13,8 +13,14 @@
         .sidebar{
             background-color: #3A3E4A;
         }
+        .nav li:hover{
+            background-color: #5e5e5e;
+        }
         .nav li a{
             color: white;
+        }
+        .navActive{
+            background-color:#5e5e5e ;
         }
         a:hover{
             text-decoration: none;
@@ -74,6 +80,7 @@
                         <li><a href="/server/adminList">用户管理</a></li>
                         <li><a href="/server/positionList">推荐位管理</a></li>
                         <li><a href="/server/positionContentList">推荐位内容管理</a></li>
+                        <li style="cursor: pointer"><a onclick="clearUnusedImages()">清除多余图片</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
@@ -84,7 +91,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="tip-login" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -93,7 +100,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <center class="tips">请先登录</center>
+              <center class="tips"></center>
             </div>
           </div>
           <div class="modal-footer">
@@ -109,26 +116,29 @@
     var unfixedPartLeftover;
     var navGroup;
     var sidebar;
-    var tip_login;
+    var tips;
+    var clearModal;
     function init() {
-        tip_login=$("#tip-login");
-        checkLogin();
+        clearModal=$("#clearModal");
         wrap=$(".wrap");
         header=$(".header");
+        tips=$(".tips");
         sidebar=$(".unfixedPartLeftover .sidebar");
         unfixedPartLeftover=$(".unfixedPartLeftover");
         navGroup=$(".unfixedPartLeftover .nav li");
         adjustment();
-        styleControl();
+        styleControl({{ navIndex }});
     }
     init();
-    function  styleControl() {
-        navImgUrl=["home.png","menu.png","page.png","user.png","advertisement.png","position_manage.png"]
+    function  styleControl(_navIndex) {
+        navImgUrl=["home.png","menu.png","page.png","user.png","advertisement.png","position_manage.png","synchronize.png"]
         for (i=0;i<navImgUrl.length;i++){
             navLi=navGroup.eq(i);
             imgUrl="/static/img/serverImg/"+navImgUrl[i];
             navLi.css("background-image","url("+imgUrl+")");
         }
+        navGroup.removeClass("navActive");
+        navGroup.eq(_navIndex).addClass("navActive");
     }
     {#自适应相关调整#}
     function adjustment(){
@@ -138,15 +148,16 @@
         headerHeight=header.height();
         unfixedPartLeftover.css("padding-top",headerHeight)
     }
-    {#登录检查#}
-    function checkLogin(){
-        if ("{{ logined }}"==="False"){
-            $(".container-fluid").empty();
-            tip_login.modal("show");
-            tip_login.on('hidden.bs.modal', function (e) {
-                location.href="/server/login"
-            })
-        }
+    function clearUnusedImages(){
+        $.ajax({
+            url:"/server/clearUnusedImages",
+            type:"get",
+            success:function(data){
+                data=JSON.parse(data)
+                tips.html(data["tips"]);
+                clearModal.modal("show")
+            }
+        })
     }
 
 </script>

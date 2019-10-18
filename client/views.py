@@ -6,132 +6,65 @@ import json
 # Create your views here.
 def rightAd(request):
     getRightAdImglist = models.article.objects.values("thumb","heading").all()[0:3]
-    # print(getRightAdImglist)
     sendRightAdImglist=[]
     for item in  getRightAdImglist:
         print(item["thumb"],item["heading"])
         sendRightAdImglist.append(item)
-    # print(sendRightAdImglist)
     return render(request,"clientCommon/rightAd.html",{"rightAdImglist":sendRightAdImglist})
 
 def index(request):
-    type_list = models.menu.objects.all()
-    typeList = []
-    for item in type_list:
-        dic = {
-            "id": item.menuId,
-            "name": item.menuName
-        }
-        # print("字典",dic)
-        typeList.append(dic)
+    headerInfo = showHeader(request)
 
     # 小的右侧图片
     getMinAdImglist = models.article.objects.values("thumb","heading").all()[0:3]
-    # print(item["thumb"], item["heading"])
-    # print(getMinAdImglist)
     sendRightAdImglist = []
     for item in getMinAdImglist:
         print(item)
         sendRightAdImglist.append(item)
-    # print(sendRightAdImglist)
     # 排名
-    oneArticle = models.article.objects.order_by('-browserNum').all()[0:1]
-    for item in oneArticle:
-        oneArticleId = item.articleId
-        oneArticleDic = {
-            "heading": item.heading,
-            "type":item.menuId,
-            "id": item.articleId,
-            "rank": 1
-        }
-    twoArticle = models.article.objects.order_by('-browserNum').all()[1:2]
-    for item in twoArticle:
-        twoArticleDic = {
-            "heading": item.heading,
-            "type":item.menuId,
-            "id": item.articleId,
-            "rank": 2
-        }
-    threeArticle = models.article.objects.order_by('-browserNum').all()[2:3]
-    for item in threeArticle:
-        threeArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id":item.articleId,
-            "rank":3
-        }
-    fourArticle = models.article.objects.order_by('-browserNum').all()[3:4]
-    for item in fourArticle:
-        fourArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank":4
-        }
-    fiveArticle = models.article.objects.order_by('-browserNum').all()[4:5]
-    for item in fiveArticle:
-        fiveArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 5
-        }
-    rankDict = {
-        "oneArticle": oneArticleDic,
-        "twoArticle": twoArticleDic,
-        "threeArticle": threeArticleDic,
-        "fourArticle": fourArticleDic,
-        "fiveArticle": fiveArticleDic,
-
-    }
-    print(rankDict)
-
+    articleTopFive=models.article.objects.values().order_by("-browserNum","-modifydate")[0:5]
     # 轮播图片
-    getfirstImg=models.article.objects.values("thumb","heading").all()[0:1]
-    print(getfirstImg)
-    for item in getfirstImg:
-        print(getfirstImg)
-        firstImg=item
-    print(firstImg)
-    getSlideImglist = models.article.objects.values("thumb","heading").all()[1:3]
-    print(getSlideImglist)
-    slideImglist = []
-    for item in getSlideImglist:
-        print(item)
-        slideImglist.append(item)
-    print(slideImglist)
-    slideImgDic={
-        "firstImg":firstImg,
-        "otherImg":slideImglist
+    context={
+        "giantPosition":showPositionContent(1),
+        "middlePosition":showPositionContent(2,3),
+        "smallPosition":showPositionContent(3),
+        "rightAdImglist":sendRightAdImglist,
+        "menuList": headerInfo["menuList"],
+        "currentType":headerInfo["currentType"],
+        "articleTopFive":articleTopFive
     }
-    print(slideImgDic)
-
-    return render(request,"client/clientIndex.html",{"rightAdImglist":sendRightAdImglist,"rankDict":rankDict,"slideImgDic":slideImgDic,"type_list":typeList})
-
+    return render(request,"client/clientIndex.html",context)
+def showPositionContent(_positionId,_limited=5):
+    if _limited==5:
+        result= models.position_content.objects.filter(positionId=_positionId).values()[0:_limited]
+    else:
+        result=models.position_content.objects.filter(positionId=_positionId).values()
+    articleList=[]
+    try:
+        for item in result:
+            itemResult=models.article.objects.filter(articleId=item["articleId"]).values()[0]
+            articleList.append(itemResult)
+    except Exception as e:
+        print("失败")
+    return articleList
 def indexArticleList(request):
     index=request.GET.get("index")
-    # index=2
-    print(index)
     num=request.GET.get("num")
-    print(num)
     firstIndex = (int(index)-1)*int(num)
     endIndex=(int(index)*int(num))
     allNum= models.article.objects.count()
-    print("总数是",allNum)
-    getArticleList = models.article.objects.values("articleId","heading","modifydate","browserNum","thumb","menuId").order_by('-modifydate').all()[firstIndex:endIndex]
-    print("数据库返回的数据",getArticleList)
+    getArticleList = models.article.objects.values("articleId","heading","modifydate","browserNum","thumb","menuId").order_by('-modifydate')[firstIndex:endIndex]
     articleList=[]
     for item in getArticleList:
         articleDict={
             "id":item["articleId"],
-            "type": item["menuId"],
+            "t": item["menuId"],
             "heading":item["heading"],
             "date":item["modifydate"].strftime("%Y-%m-%d %H:%M:%S"),
             "num":item["browserNum"],
             "thumb":item["thumb"],
         }
         articleList.append(articleDict)
-    print(articleList)
     returnDic={
         "articleList":articleList,
         "allNum":allNum
@@ -139,190 +72,85 @@ def indexArticleList(request):
     return  HttpResponse(json.dumps(returnDic))
 def detail(request):
     # 导航
-    type_list = models.menu.objects.all()
-    typeList = []
-    for item in type_list:
-        dic = {
-            "id": item.menuId,
-            "name": item.menuName
-        }
-        # print("字典",dic)
-        typeList.append(dic)
-
-        # 排名
-    oneArticle = models.article.objects.order_by('-browserNum').all()[0:1]
-    for item in oneArticle:
-        oneArticleId = item.articleId
-        oneArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 1
-        }
-    twoArticle = models.article.objects.order_by('-browserNum').all()[1:2]
-    for item in twoArticle:
-        twoArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 2
-        }
-    threeArticle = models.article.objects.order_by('-browserNum').all()[2:3]
-    for item in threeArticle:
-        threeArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 3
-        }
-    fourArticle = models.article.objects.order_by('-browserNum').all()[3:4]
-    for item in fourArticle:
-        fourArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 4
-        }
-    fiveArticle = models.article.objects.order_by('-browserNum').all()[4:5]
-    for item in fiveArticle:
-        fiveArticleDic = {
-            "heading": item.heading,
-            "type": item.menuId,
-            "id": item.articleId,
-            "rank": 5
-        }
-    rankDict = {
-        "oneArticle": oneArticleDic,
-        "twoArticle": twoArticleDic,
-        "threeArticle": threeArticleDic,
-        "fourArticle": fourArticleDic,
-        "fiveArticle": fiveArticleDic,
-
-    }
-    print(rankDict)
+    headerInfo = showHeader(request)
+    # 排名
+    articleTopFive = models.article.objects.values().order_by("-browserNum", "-modifydate")[0:5]
 
     # 右侧图片
     getRightAdImglist = models.article.objects.values("thumb", "heading").all()[0:3]
-    # print(getRightAdImglist)
     sendRightAdImglist = []
     for item in getRightAdImglist:
-        print(item["thumb"], item["heading"])
         sendRightAdImglist.append(item)
+    context={
+        "menuList": headerInfo["menuList"],
+        "currentType": headerInfo["currentType"],
+        "articleTopFive": articleTopFive,
+        "rightAdImglist": sendRightAdImglist
+    }
 
-    return render(request,"client/articleDetail.html",{"type_list":typeList,"rankDict":rankDict,"rightAdImglist":sendRightAdImglist})
+    return render(request,"client/articleDetail.html",context)
 
 def detailHandle(request):
     id=request.GET.get("id")
     print(id)
     try:
         getaddBrowserNum = models.article.objects.values("browserNum").get(articleId=id)
-        print("当前浏览量是",getaddBrowserNum)
         changeNum=getaddBrowserNum["browserNum"]+1
-        print(changeNum)
         models.article.objects.filter(articleId=id).update(browserNum=changeNum)
     except Exception as e:
         return HttpResponse("添加浏览量失败")
     try:
         getArticleDetail=models.article.objects.values("heading","headingColor","modifydate").get(articleId=id)
         getArticleContentDetail=models.articlecontent.objects.values("contents").get(articleId=id)
-        # print(getArticleContentDetail)
         ArticleDetail={
             "heading":getArticleDetail["heading"],
             "headingColor": getArticleDetail["headingColor"],
             "modifydate": getArticleDetail["modifydate"].strftime("%y-%m-%d %H:%M:%S"),
             "contents": getArticleContentDetail["contents"]
         }
-        # print(ArticleDetail)
     except Exception as e:
         return HttpResponse("添加浏览量失败")
     return HttpResponse(json.dumps(ArticleDetail))
-def type(request):
-    currentType=request.GET.get("type")
-    print("当前type是",currentType)
-    type_list = models.menu.objects.all()
+def showRank():
+    pass
+def showHeader(request):
+    # 获取当前点击的分类
+    currentType = request.GET.get("type")
+    context={}
+    context["currentType"] = int(currentType) if currentType else 0
+    menuList = models.menu.objects.values()
     typeList = []
-    for item in type_list:
-        dic = {
-            "id": item.menuId,
-            "name": item.menuName
-        }
-        # print("字典",dic)
-        typeList.append(dic)
-
-        # 排名
-        oneArticle = models.article.objects.order_by('-browserNum').all()[0:1]
-        for item in oneArticle:
-            oneArticleDic = {
-                "heading": item.heading,
-                "type": item.menuId,
-                "id": item.articleId,
-                "rank": 1
-            }
-        twoArticle = models.article.objects.order_by('-browserNum').all()[1:2]
-        for item in twoArticle:
-            twoArticleDic = {
-                "heading": item.heading,
-                "type": item.menuId,
-                "id": item.articleId,
-                "rank": 2
-            }
-        threeArticle = models.article.objects.order_by('-browserNum').all()[2:3]
-        for item in threeArticle:
-            threeArticleDic = {
-                "heading": item.heading,
-                "id": item.articleId,
-                "type": item.menuId,
-                "rank": 3
-            }
-        fourArticle = models.article.objects.order_by('-browserNum').all()[3:4]
-        for item in fourArticle:
-            fourArticleDic = {
-                "heading": item.heading,
-                "type": item.menuId,
-                "id": item.articleId,
-                "rank": 4
-            }
-        fiveArticle = models.article.objects.order_by('-browserNum').all()[4:5]
-        for item in fiveArticle:
-            fiveArticleDic = {
-                "heading": item.heading,
-                "type": item.menuId,
-                "id": item.articleId,
-                "rank": 5
-            }
-        rankDict = {
-            "oneArticle": oneArticleDic,
-            "twoArticle": twoArticleDic,
-            "threeArticle": threeArticleDic,
-            "fourArticle": fourArticleDic,
-            "fiveArticle": fiveArticleDic,
-
-        }
-        print(rankDict)
-# 右侧图片
-        getRightAdImglist = models.article.objects.values("thumb", "heading").all()[0:3]
-        # print(getRightAdImglist)
-        sendRightAdImglist = []
-        for item in getRightAdImglist:
-            print(item["thumb"], item["heading"])
-            sendRightAdImglist.append(item)
-
-    return render(request,"client/articleType.html",{"type_list":typeList,"rankDict":rankDict,"rightAdImglist":sendRightAdImglist,"currentType":currentType})
+    typeList.extend(menuList)
+    context["menuList"]=typeList
+    return context
+def type(request):
+    # 获取header列表
+    headerInfo=showHeader(request)
+    # 排名
+    articleTopFive = models.article.objects.values().order_by("-browserNum", "-modifydate")[0:5]
+    getRightAdImglist = models.article.objects.values("thumb", "heading").all()[0:3]
+    sendRightAdImglist = []
+    for item in getRightAdImglist:
+        print(item["thumb"], item["heading"])
+        sendRightAdImglist.append(item)
+    context={
+        "menuList": headerInfo["menuList"],
+        "articleTopFive": articleTopFive,
+        "rightAdImglist": sendRightAdImglist,
+        "currentType": headerInfo["currentType"]
+    }
+    print("afawfwa", headerInfo)
+    return render(request,"client/articleType.html",context)
 
 
 def typeList(request):
     type = request.GET.get("type")
     index=request.GET.get("index")
-    print("前端传过来的类型的id",type)
-    print(index)
     num=request.GET.get("num")
-    print(num)
     firstIndex = (int(index)-1)*int(num)
     endIndex=(int(index)*int(num))
     allNum= models.article.objects.filter(menuId=type).order_by('-modifydate').count()
-    print("总数是",allNum)
     getArticleList = models.article.objects.filter(menuId=type).order_by('-modifydate').all()[firstIndex:endIndex]
-    print("数据库返回的数据",getArticleList)
     articleList=[]
     for item in getArticleList:
         articleDict={
@@ -334,7 +162,6 @@ def typeList(request):
             "thumb":item.thumb,
         }
         articleList.append(articleDict)
-    print(articleList)
     returnDic={
         "articleList":articleList,
         "allNum":allNum
